@@ -85,4 +85,8 @@ impl Database {
             ),
         }
     }
+
+    pub fn close(&self) {
+        // nothing yet
+    }
 }
