@@ -46,6 +46,8 @@ impl ChaCha20Cipher {
 }
 
 impl Decrypt for ChaCha20Cipher {
+
+    #[inline(always)]
     fn decrypt(&mut self, ciphertext: &[u8]) -> Result<Vec<u8>> {
         let mut cipher = ChaCha20::new_var(
             self.key.as_ref(),
@@ -65,6 +67,8 @@ impl Decrypt for ChaCha20Cipher {
 }
 
 impl Encrypt for ChaCha20Cipher {
+
+    #[inline(always)]
     fn encrypt(&mut self, plaintext: &[u8]) -> Result<Vec<u8>> {
         let mut cipher = ChaCha20::new_var(
             self.key.as_ref(),

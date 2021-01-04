@@ -11,6 +11,8 @@ pub trait Decompress {
 pub struct NoCompression;
 
 impl Decompress for NoCompression {
+    
+    #[inline(always)]
     fn decompress(&self, in_buffer: &[u8]) -> Result<Vec<u8>> {
         Ok(in_buffer.to_vec())
     }
@@ -19,6 +21,8 @@ impl Decompress for NoCompression {
 pub struct GZipCompression;
 
 impl Decompress for GZipCompression {
+
+    #[inline(always)]
     fn decompress(&self, in_buffer: &[u8]) -> Result<Vec<u8>> {
         let mut res = Vec::new();
         let mut decoder = GzDecoder::new(in_buffer);

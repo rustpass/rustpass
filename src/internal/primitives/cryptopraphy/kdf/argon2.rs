@@ -27,6 +27,7 @@ pub struct Argon2Kdf {
 
 impl Kdf for Argon2Kdf {
 
+    #[inline(always)]
     fn transform_key(
         &self,
         composite_key: &GenericArray<u8, typenum::U32>,
@@ -64,31 +65,37 @@ mod tests {
 
     #[test]
     fn test_transform_key() {
-        let result = _test_transform_key_impl(1024, 2);
+        let result = _test_transform_key_impl(1024, 1);
+        assert_that(&result).is_ok();
+    }
+
+    #[test]
+    fn test_transform_key_1000() {
+        let result = _test_transform_key_impl(1000, 1);
+        assert_that(&result).is_ok();
+    }
+
+    #[test]
+    fn test_transform_key_2000() {
+        let result = _test_transform_key_impl(2000, 1);
+        assert_that(&result).is_ok();
+    }
+
+    #[test]
+    fn test_transform_key_5000() {
+        let result = _test_transform_key_impl(5000, 1);
         assert_that(&result).is_ok();
     }
 
     #[test]
     fn test_transform_key_10000() {
-        let result = _test_transform_key_impl(10000, 2);
+        let result = _test_transform_key_impl(10000, 1);
         assert_that(&result).is_ok();
     }
 
     #[test]
-    fn test_transform_key_100000() {
-        let result = _test_transform_key_impl(100000, 2);
-        assert_that(&result).is_ok();
-    }
-
-    #[test]
-    fn test_transform_key_1000000() {
-        let result = _test_transform_key_impl(1000000, 2);
-        assert_that(&result).is_ok();
-    }
-
-    #[test]
-    fn test_transform_key_10000000() {
-        let result = _test_transform_key_impl(10000000, 2);
+    fn test_transform_key_20000() {
+        let result = _test_transform_key_impl(20000, 1);
         assert_that(&result).is_ok();
     }
 

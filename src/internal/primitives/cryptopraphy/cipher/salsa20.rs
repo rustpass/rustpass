@@ -39,6 +39,8 @@ impl Salsa20Cipher {
 
  */
 impl Decrypt for Salsa20Cipher {
+
+    #[inline(always)]
     fn decrypt(&mut self, ciphertext: &[u8]) -> Result<Vec<u8>> {
         let mut cipher = Salsa20::new(
             GenericArray::from_slice(self.key.as_slice()),
@@ -51,6 +53,8 @@ impl Decrypt for Salsa20Cipher {
 }
 
 impl Encrypt for Salsa20Cipher {
+
+    #[inline(always)]
     fn encrypt(&mut self, plaintext: &[u8]) -> Result<Vec<u8>> {
         let mut cipher = Salsa20::new(
             GenericArray::from_slice(self.key.as_slice()),
@@ -101,5 +105,35 @@ mod tests {
             .matches(|f| {
                 f.starts_with(plaintext.as_bytes())
             })
+    }
+}
+
+#[cfg(bench)]
+mod benchmark {
+    use super::*;
+    use test::Bencher;
+
+    #[bench]
+    fn bench_encrypt_decrypt(b: &mut Bencher) {
+        let key = [0u8; 32];
+        let iv = [1u8; 8];
+
+        let plaintext = "this is a simple plaintext";
+
+        let encrypt_algo = Salsa20Cipher::new(key.as_ref(), iv.as_ref());
+        let decrypt_algo = Salsa20Cipher::new(key.as_ref(), iv.as_ref());
+
+        b.iter(|_| {
+            let encrypted = encrypt_algo
+                .unwrap()
+                .encrypt(
+                    plaintext.as_bytes()
+                );
+            let decrypted = decrypt_algo
+                .unwrap()
+                .decrypt(
+                    encrypted.unwrap().as_ref()
+                );
+        });
     }
 }

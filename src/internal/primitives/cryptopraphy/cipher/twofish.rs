@@ -36,6 +36,8 @@ impl TwofishCipher {
 }
 
 impl Decrypt for TwofishCipher {
+
+    #[inline(always)]
     fn decrypt(&mut self, ciphertext: &[u8]) -> Result<Vec<u8>> {
         let cipher = TwofishCbc::new_var(&self.key, &self.iv)
             .map_err(|e| Error::from(DatabaseIntegrityError::from(CryptoError::from(e))))?;
@@ -50,6 +52,8 @@ impl Decrypt for TwofishCipher {
 }
 
 impl Encrypt for TwofishCipher {
+
+    #[inline(always)]
     fn encrypt(&mut self, plaintext: &[u8]) -> Result<Vec<u8>> {
         let cipher = TwofishCbc::new_var(&self.key, &self.iv)
             .map_err(|e| Error::from(DatabaseIntegrityError::from(CryptoError::from(e))))?;

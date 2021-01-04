@@ -40,6 +40,7 @@ impl AES256Cipher {
 }
 
 impl Decrypt for AES256Cipher {
+
     #[inline(always)]
     fn decrypt(&mut self, ciphertext: &[u8]) -> Result<Vec<u8>> {
         let cipher = Aes256Cbc::new_var(&self.key, &self.iv)
@@ -55,6 +56,7 @@ impl Decrypt for AES256Cipher {
 }
 
 impl Encrypt for AES256Cipher {
+
     #[inline(always)]
     fn encrypt(&mut self, plaintext: &[u8]) -> Result<Vec<u8>> {
         let cipher = Aes256Cbc::new_var(&self.key, &self.iv)
