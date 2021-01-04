@@ -1,0 +1,45 @@
+language: rust
+rust:
+  - stable
+  - beta
+  - nightly
+
+jobs:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+  include:
+    - language: rust
+      os: linux
+      dist: bionic
+    - language: rust
+      os: osx
+  
+arch:
+  - amd64
+
+git:
+  submodules: false
+
+install:
+  - bash ci/install.sh
+
+script:
+  - cargo check --target $TARGET
+  - cargo build --verbose --all
+
+after_script: set +e
+
+cache: cargo
+
+before_cache:
+  - rm -rf "$HOME/.cargo/registry/src"
+  - chmod -R a+r $HOME/.cargo;
+
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    on_success: never
