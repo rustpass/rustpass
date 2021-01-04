@@ -64,10 +64,17 @@ impl AesKdf {
             ).map_err(|e| Error::from(DatabaseIntegrityError::from(CryptoError::from(e))))?;
 
         for _ in 0..self.rounds {
-            cipher.clone()
-                .encrypt(&mut key, key_len)
-                .map(Vec::from)
-                .map_err(|e| Error::from(DatabaseIntegrityError::from(CryptoError::from(e))))?;
+            let res = cipher
+                .clone()
+                .encrypt(
+                    &mut key,
+                    key_len
+                );
+            if  res.is_err() {
+                res.map_err(|e| Error::from(
+                    DatabaseIntegrityError::from(CryptoError::from(e))
+                ))?;
+            }
         }
 
         Ok(key.clone())
