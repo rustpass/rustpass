@@ -1,18 +1,17 @@
-use crate::{
-    internal::primitives::cryptopraphy,
-    errors::DatabaseIntegrityError,
-    results::Result,
-};
-
 use byteorder::{
     ByteOrder,
     LittleEndian,
 };
-
 use generic_array::{
     GenericArray,
     typenum,
 };
+
+use crate::{
+    errors::DatabaseIntegrityError,
+    results::Result,
+};
+use crate::internal::cryptopraphy;
 
 pub(crate) fn read_hmac_block_stream(
     data: &[u8],
@@ -116,10 +115,11 @@ pub(crate) fn get_hmac_block_key(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use extfmt::Hexlify;
     use hex;
     use spectral::prelude::*;
+
+    use super::*;
 
     const DATA_VEC_SHORT: &[u8] = &[
         0x01, 0x02, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -206,7 +206,7 @@ mod tests {
             &key,
         );
 
-        let subj = assert_that(&result)
+        assert_that(&result)
             .is_ok()
             .is_equal_to(DATA_VEC_LONG.to_vec());
     }

@@ -1,11 +1,10 @@
-use super::{
-    Cipher,
-    Decrypt,
-    Encrypt,
+use chacha20::ChaCha20;
+use cipher::{
+    NewStreamCipher,
+    StreamCipher
 };
 
 use crate::{
-    internal::primitives::cryptopraphy::hash::sha512,
     errors::{
         CryptoError,
         DatabaseIntegrityError,
@@ -13,14 +12,13 @@ use crate::{
     },
     results::Result,
 };
+use crate::internal::cryptopraphy::hash::sha512;
 
-use chacha20::ChaCha20;
-
-use cipher::{
-    StreamCipher,
-    NewStreamCipher
+use super::{
+    Cipher,
+    Decrypt,
+    Encrypt,
 };
-
 
 #[derive(Debug)]
 pub struct ChaCha20Cipher {
@@ -97,8 +95,9 @@ impl Cipher for ChaCha20Cipher {}
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use spectral::prelude::*;
+
+    use super::*;
 
     #[test]
     fn test_encrypt_decrypt() {

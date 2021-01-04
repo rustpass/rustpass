@@ -1,10 +1,22 @@
+use std::{
+    collections::HashMap,
+    convert::TryInto,
+    str,
+};
+
+use byteorder::{
+    ByteOrder,
+    LittleEndian,
+};
+use generic_array::GenericArray;
+
 use crate::{
     api::{
-        kdb::KDBHeader,
         header::{
             Header,
             InnerHeader
         },
+        kdb::KDBHeader,
         suites::OuterCipherSuite
     },
     database::{
@@ -16,29 +28,17 @@ use crate::{
         DatabaseIntegrityError,
         Error,
     },
-    results::Result,
     internal::{
         database::binary::header::kdb::{
             self,
             HEADER_SIZE,
         },
-        primitives::cryptopraphy::{
-            self,
-            kdf::Kdf
-        },
     },
+    results::Result,
 };
-
-use byteorder::{
-    ByteOrder,
-    LittleEndian,
-};
-use generic_array::GenericArray;
-
-use std::{
-    collections::HashMap,
-    convert::TryInto,
-    str,
+use crate::internal::cryptopraphy::{
+    self,
+    kdf::Kdf
 };
 
 fn entry_name(field_type: u16) -> &'static str {

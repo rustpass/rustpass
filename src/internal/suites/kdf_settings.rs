@@ -1,24 +1,22 @@
+use std::convert::TryFrom;
+
 use crate::{
     api::suites::KdfSettings,
     errors::{
         DatabaseIntegrityError,
         Error
     },
-    results::Result,
     internal::{
-        primitives::{
-            cryptopraphy,
-            variant_dictionary,
-        },
+        primitives::variant_dictionary,
         suites::{
             KDF_AES_KDBX3,
             KDF_AES_KDBX4,
             KDF_ARGON2
         }
     },
+    results::Result,
 };
-
-use std::convert::TryFrom;
+use crate::internal::cryptopraphy;
 
 impl KdfSettings {
     pub(crate) fn get_kdf(&self) -> Box<dyn cryptopraphy::kdf::Kdf> {
@@ -97,12 +95,13 @@ impl TryFrom<variant_dictionary::VariantDictionary> for KdfSettings {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use spectral::prelude::*;
     use hmac::crypto_mac::generic_array::{
         GenericArray,
         typenum,
     };
+    use spectral::prelude::*;
+
+    use super::*;
 
     #[test]
     fn test_argon2_settings() {

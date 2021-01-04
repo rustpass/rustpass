@@ -20,18 +20,18 @@ use crate::{
         DatabaseIntegrityError,
         Error,
     },
-    results::Result,
-    xml_parse,
     internal::{
         database::binary::{
             constants,
             header::kdbx4
         },
-        primitives::cryptopraphy,
         random,
         suites::hmac_block_stream,
     },
+    results::Result,
+    xml_parse,
 };
+use crate::internal::cryptopraphy;
 
 // create a new database
 pub(crate) fn create(

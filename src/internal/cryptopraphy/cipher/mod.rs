@@ -13,10 +13,7 @@ pub(crate) use plain::PlainCipher;
 mod twofish;
 pub(crate) use self::twofish::TwofishCipher;
 
-pub(crate) use crate::{
-    errors::Error,
-    results::Result,
-};
+pub(crate) use crate::results::Result;
 
 
 pub(crate) trait Encrypt {

@@ -4,7 +4,6 @@ use crate::{
         InnerHeader
     },
     errors::DatabaseIntegrityError,
-    results::Result,
     internal::{
         database::binary::{
             constants::{
@@ -13,10 +12,11 @@ use crate::{
             },
             version::get_kdbx_version,
         },
-        keyfile,
-        primitives::cryptopraphy
+        keyfile
     },
+    results::Result,
 };
+use crate::internal::cryptopraphy;
 
 pub mod items;
 pub mod kdb;

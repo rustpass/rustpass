@@ -64,7 +64,7 @@ mod tests {
     fn test_construct_read() {
         let sample = "hello world".as_bytes();
 
-        let mut b64 = Base64Value::new(sample);
+        let b64 = Base64Value::new(sample);
 
         let read_res = b64.to_vec();
 
@@ -75,7 +75,7 @@ mod tests {
     fn test_from_bytes_read_roundtrip() {
         let sample = "hello world".as_bytes();
 
-        let mut b64 = Base64Value::from(sample.clone());
+        let b64 = Base64Value::from(sample.clone());
 
         let read_res = b64.to_vec();
 
@@ -86,7 +86,7 @@ mod tests {
     fn test_from_string_read_roundtrip() {
         let sample = "hello world".to_owned();
 
-        let mut b64 = Base64Value::from(sample.clone());
+        let b64 = Base64Value::from(sample.clone());
 
         let read_res = b64.to_vec();
 
@@ -97,7 +97,7 @@ mod tests {
     fn test_from_str_read_roundtrip() {
         let sample = "hello world";
 
-        let mut b64 = Base64Value::from(sample);
+        let b64 = Base64Value::from(sample);
 
         let read_res = b64.to_vec();
 

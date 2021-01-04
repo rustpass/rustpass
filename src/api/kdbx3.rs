@@ -17,7 +17,7 @@ pub struct KDBX3Header {
     pub master_seed: Vec<u8>,
     pub transform_seed: Vec<u8>,
     pub transform_rounds: u64,
-    pub outer_iv: Vec<u8>, // ENCRYPTIONIV
+    pub outer_iv: Vec<u8>,
     pub protected_stream_key: Vec<u8>,
     pub stream_start: Vec<u8>,
     pub inner_cipher: InnerCipherSuite,
@@ -39,9 +39,4 @@ impl Sizable for KDBX3Header {
             + self.stream_start.len()
             + std::mem::size_of::<InnerCipherSuite>()
     }
-}
-
-#[cfg(test)]
-mod tests {
-
 }

@@ -1,3 +1,13 @@
+use base64;
+use secstr::SecStr;
+use xml::{
+    name::OwnedName,
+    reader::{
+        EventReader,
+        XmlEvent
+    }
+};
+
 use crate::{
     database::items::{
         AutoType,
@@ -11,18 +21,8 @@ use crate::{
         Error,
     },
     results::Result,
-    internal::primitives::cryptopraphy::Cipher,
 };
-
-use base64;
-use secstr::SecStr;
-use xml::{
-    name::OwnedName,
-    reader::{
-        EventReader,
-        XmlEvent
-    }
-};
+use crate::internal::cryptopraphy::Cipher;
 
 #[derive(Debug)]
 enum Node {
@@ -226,9 +226,8 @@ pub(crate) fn parse_xml_block(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Resu
     Ok(root_group)
 }
 
+#[allow(dead_code)]
 pub(crate) fn write_xml_block(_group: &Group, _inner_cipher: &mut dyn Cipher) -> Result<Vec<u8>> {
     let res = vec![];
-
-
     Ok(res)
 }

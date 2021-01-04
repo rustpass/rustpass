@@ -3,15 +3,10 @@ pub(crate) mod header;
 pub(crate) mod payload;
 pub(crate) mod version;
 
-pub(crate) trait AsBytes {
-    fn as_bytes(&self) -> Vec<u8>;
-}
-
-pub(crate) trait TryFromBytes {
-    type Error;
-
-    fn from_bytes(value: &[u8]) -> Result<Self, ()> where Self: Sized;
-}
+use crate::internal::traits::{
+    AsBytes,
+    TryFromBytes
+};
 
 /// `Block<'a>` trait
 pub(crate) trait Block<'a> {}

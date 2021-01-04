@@ -1,17 +1,15 @@
+use std::convert::TryFrom;
+
 use crate::{
     api::suites::OuterCipherSuite,
     errors::{
         DatabaseIntegrityError,
         Error
     },
+    internal::suites,
     results::Result,
-    internal::{
-        primitives::cryptopraphy,
-        suites
-    },
 };
-
-use std::convert::TryFrom;
+use crate::internal::cryptopraphy;
 
 impl OuterCipherSuite {
     pub(crate) fn get_cipher(
@@ -56,8 +54,9 @@ impl TryFrom<&[u8]> for OuterCipherSuite {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use spectral::prelude::*;
+
+    use super::*;
 
     #[test]
     fn test_encrypt_decrypt_aes256_suite_expect_success() {
@@ -66,7 +65,7 @@ mod tests {
         let plaintext = "This is my plaintext".as_bytes();
 
         let suite = OuterCipherSuite::AES256;
-        let mut selected_cipher = suite
+        let selected_cipher = suite
             .get_cipher(
                 key.as_ref(),
                 iv.as_ref(),
@@ -95,7 +94,7 @@ mod tests {
         let plaintext = "This is my plaintext".as_bytes();
 
         let suite = OuterCipherSuite::AES256;
-        let mut selected_cipher = suite
+        let selected_cipher = suite
             .get_cipher(
                 key.as_ref(),
                 iv.as_ref(),
@@ -115,7 +114,7 @@ mod tests {
         let plaintext = "This is my plaintext".as_bytes();
 
         let suite = OuterCipherSuite::AES256;
-        let mut selected_cipher = suite
+        let selected_cipher = suite
             .get_cipher(
                 key.as_ref(),
                 iv.as_ref(),
@@ -141,7 +140,7 @@ mod tests {
         let suite = OuterCipherSuite::AES256;
 
         // setup encryption
-        let mut selected_encrypt_cipher = suite
+        let selected_encrypt_cipher = suite
             .get_cipher(
                 encrypt_key.as_ref(),
                 encrypt_iv.as_ref(),
@@ -156,7 +155,7 @@ mod tests {
         assert_that(&ciphertext).is_not_equal_to(plaintext.to_vec());
 
         // setup decryption
-        let mut select_decrypt_cipher = suite
+        let select_decrypt_cipher = suite
             .get_cipher(
                 decrypt_key.as_ref(),
                 decrypt_iv.as_ref()
@@ -179,7 +178,7 @@ mod tests {
 
         let suite = OuterCipherSuite::Twofish;
 
-        let mut selected_cipher = suite
+        let selected_cipher = suite
             .get_cipher(
                 key.as_ref(),
                 iv.as_ref(),
@@ -208,7 +207,7 @@ mod tests {
         let plaintext = "This is my plaintext".as_bytes();
 
         let suite = OuterCipherSuite::Twofish;
-        let mut selected_cipher = suite
+        let selected_cipher = suite
             .get_cipher(
                 key.as_ref(),
                 iv.as_ref(),
@@ -228,7 +227,7 @@ mod tests {
         let plaintext = "This is my plaintext".as_bytes();
 
         let suite = OuterCipherSuite::Twofish;
-        let mut selected_cipher = suite
+        let selected_cipher = suite
             .get_cipher(
                 key.as_ref(),
                 iv.as_ref(),
@@ -249,7 +248,7 @@ mod tests {
 
         let suite = OuterCipherSuite::ChaCha20;
 
-        let mut selected_encrypt_cipher = suite
+        let selected_encrypt_cipher = suite
             .get_cipher(
                 key.as_ref(),
                 iv.as_ref(),
@@ -267,7 +266,7 @@ mod tests {
 
         // reinitialize the cipher - reset the internal state
 
-        let mut selected_decrypt_cipher = suite
+        let selected_decrypt_cipher = suite
             .get_cipher(
                 key.as_ref(),
                 iv.as_ref(),
@@ -351,7 +350,7 @@ mod tests {
         let suite = OuterCipherSuite::ChaCha20;
 
         // setup encryption
-        let mut selected_encrypt_cipher = suite
+        let selected_encrypt_cipher = suite
             .get_cipher(
                 encrypt_key.as_ref(),
                 encrypt_iv.as_ref(),
@@ -366,7 +365,7 @@ mod tests {
         assert_that(&ciphertext).is_not_equal_to(plaintext.to_vec());
 
         // setup decryption
-        let mut select_decrypt_cipher = suite
+        let select_decrypt_cipher = suite
             .get_cipher(
                 decrypt_key.as_ref(),
                 decrypt_iv.as_ref()

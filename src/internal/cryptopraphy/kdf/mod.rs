@@ -6,7 +6,7 @@ pub(crate) use self::argon2::*;
 
 use crate::results::Result;
 
-pub(super) use generic_array::{
+pub(in crate::internal) use generic_array::{
     typenum,
     GenericArray,
 };

@@ -21,21 +21,21 @@ use crate::{
         DatabaseIntegrityError,
         Error
     },
-    results::Result,
-    xml_parse,
     internal::{
         database::binary::{
             constants,
             header::kdbx3::read_header
         },
-        primitives::cryptopraphy::{
-            self,
-            kdf::Kdf,
-        },
         random
     },
+    results::Result,
+    xml_parse,
 };
 use crate::api::suites::InnerCipherSuite;
+use crate::internal::cryptopraphy::{
+    self,
+    kdf::Kdf,
+};
 
 // create a new database
 pub(crate) fn create(

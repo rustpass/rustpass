@@ -1,10 +1,4 @@
-use crate::{
-    errors::Error,
-    results::Result,
-    internal::primitives::{
-        cryptopraphy,
-    },
-};
+use std::io::Read;
 
 use xml::{
     name::OwnedName,
@@ -14,7 +8,11 @@ use xml::{
     }
 };
 
-use std::io::Read;
+use crate::{
+    errors::Error,
+    results::Result,
+};
+use crate::internal::cryptopraphy;
 
 pub(crate) fn parse(source: &mut dyn Read) -> Result<Vec<u8>> {
     let mut buffer = Vec::new();
@@ -73,8 +71,9 @@ fn parse_xml_keyfile(xml: &[u8]) -> Result<Vec<u8>> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use spectral::prelude::*;
+
+    use super::*;
 
     #[test]
     fn test_parse_keyfile_xml() {

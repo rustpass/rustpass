@@ -1,11 +1,15 @@
-use super::{
-    Kdf,
-    GenericArray,
-    typenum,
+use aes::Aes256;
+use block_modes::{
+    block_padding::ZeroPadding, // for KDF ZeroPadding is used
+    BlockMode,
+    Ecb,
+};
+use futures::{
+    executor::block_on,
+    join
 };
 
 use crate::{
-    internal::primitives::cryptopraphy::hash::sha256,
     errors::{
         CryptoError,
         DatabaseIntegrityError,
@@ -13,18 +17,12 @@ use crate::{
     },
     results::Result,
 };
+use crate::internal::cryptopraphy::hash::sha256;
 
-use aes::Aes256;
-
-use block_modes::{
-    block_padding::ZeroPadding, // for KDF ZeroPadding is used
-    BlockMode,
-    Ecb,
-};
-
-use futures::{
-    executor::block_on,
-    join
+use super::{
+    GenericArray,
+    Kdf,
+    typenum,
 };
 
 type Mode = Ecb<Aes256, ZeroPadding>;
@@ -97,9 +95,10 @@ impl Kdf for AesKdf {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use extfmt::Hexlify;
     use spectral::prelude::*;
+
+    use super::*;
 
     #[test]
     fn test_transform_key() {
@@ -182,7 +181,7 @@ mod tests {
     }
 
     fn _test_transform_key_impl(rounds: u64) -> Result<GenericArray<u8, typenum::U32>> {
-        let mut key = [1u8; 32].to_vec();
+        let key = [1u8; 32].to_vec();
 
         let sample_key = GenericArray::from_slice(&key);
 

@@ -1,3 +1,5 @@
+use std::convert::TryFrom;
+
 use crate::{
     api::suites::InnerCipherSuite,
     errors::{
@@ -5,10 +7,8 @@ use crate::{
         Error
     },
     results::Result,
-    internal::primitives::cryptopraphy,
 };
-
-use std::convert::TryFrom;
+use crate::internal::cryptopraphy;
 
 impl InnerCipherSuite {
     pub(crate) fn get_cipher(&self, key: &[u8]) -> Result<Box<dyn cryptopraphy::cipher::Cipher>> {
@@ -46,8 +46,9 @@ impl TryFrom<u32> for InnerCipherSuite {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use spectral::prelude::*;
+
+    use super::*;
 
     #[test]
     fn test_plain_cipher_expect_success() {

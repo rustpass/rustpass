@@ -10,7 +10,8 @@ use crate::{
             InnerCipherSuite,
             KdfSettings,
             OuterCipherSuite
-        }
+        },
+        traits::Sizable
     },
     errors::{
         DatabaseIntegrityError,

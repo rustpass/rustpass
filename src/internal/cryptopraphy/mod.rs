@@ -3,7 +3,7 @@ pub mod kdf;
 pub mod hash;
 pub mod hmac;
 
-pub use self::{
+pub(crate) use self::{
     cipher::*,
     kdf::*,
     hash::*,

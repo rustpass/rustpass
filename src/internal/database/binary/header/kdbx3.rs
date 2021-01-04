@@ -5,7 +5,8 @@ use crate::{
         suites::{
             InnerCipherSuite,
             OuterCipherSuite
-        }
+        },
+        traits::Sizable
     },
     errors::DatabaseIntegrityError,
     results::Result,
@@ -14,7 +15,6 @@ use crate::{
             self,
             BlockData,
             BlockId,
-            BlockSize,
             header::block,
             header::constants,
             version::get_kdbx_version,

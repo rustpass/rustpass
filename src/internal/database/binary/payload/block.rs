@@ -1,12 +1,19 @@
-use crate::internal::database::binary::{
-    AsBytes,
-    TryFromBytes,
-    Block,
-    BlockId,
-    BlockHash,
-    BlockSize,
-    BlockData,
-    BlockDataSlice
+use crate::{
+    api::traits::Sizable,
+    internal::{
+        database::binary::{
+            Block,
+            BlockId,
+            BlockHash,
+            BlockSize,
+            BlockData,
+            BlockDataSlice
+        },
+        traits::{
+            AsBytes,
+            TryFromBytes,
+        }
+    }
 };
 
 use bytes::{
@@ -47,8 +54,10 @@ impl PayloadBlock {
             block_data: _block_data.clone(),
         }
     }
+}
 
-    pub fn size(&self) -> usize {
+impl Sizable for PayloadBlock {
+    fn size_in_bytes(&self) -> usize {
         Self::OFFSET + self.block_size() as usize
     }
 }

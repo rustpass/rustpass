@@ -76,8 +76,3 @@ impl Sizable for BinaryAttachment {
         )
     }
 }
-
-#[cfg(test)]
-mod tests {
-
-}

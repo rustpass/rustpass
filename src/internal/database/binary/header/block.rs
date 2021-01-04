@@ -1,11 +1,18 @@
-use crate::internal::database::binary::{
-    AsBytes,
-    TryFromBytes,
-    Block,
-    BlockId,
-    BlockSize,
-    BlockData,
-    BlockDataSlice,
+use crate::{
+    api::traits::Sizable,
+    internal::{
+        database::binary::{
+            Block,
+            BlockId,
+            BlockSize,
+            BlockData,
+            BlockDataSlice,
+        },
+        traits::{
+            AsBytes,
+            TryFromBytes,
+        }
+    }
 };
 
 use bytes::{
@@ -43,8 +50,10 @@ impl HeaderBlock3 {
             block_data: Vec::from(_block_data.as_slice()),
         }
     }
+}
 
-    pub fn size(&self) -> usize {
+impl Sizable for HeaderBlock3 {
+    fn size_in_bytes(&self) -> usize {
         Self::OFFSET + self.block_size as usize
     }
 }
@@ -135,8 +144,10 @@ impl HeaderBlock4 {
             block_data: Vec::from(_block_data),
         }
     }
+}
 
-    pub fn size(&self) -> usize {
+impl Sizable for HeaderBlock4 {
+    fn size_in_bytes(&self) -> usize {
         Self::OFFSET + self.block_size as usize
     }
 }
