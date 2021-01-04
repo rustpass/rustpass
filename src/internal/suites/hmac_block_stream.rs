@@ -14,7 +14,7 @@ use generic_array::{
     typenum,
 };
 
-pub fn read_hmac_block_stream(
+pub(crate) fn read_hmac_block_stream(
     data: &[u8],
     key: &GenericArray<u8, typenum::U64>,
 ) -> Result<Vec<u8>> {
@@ -59,7 +59,7 @@ pub fn read_hmac_block_stream(
     Ok(out)
 }
 
-pub fn create_hmac_block_stream(
+pub(crate) fn create_hmac_block_stream(
     data: &[u8],
     size: usize,
     key: &GenericArray<u8, typenum::U64>,
@@ -105,7 +105,7 @@ pub fn create_hmac_block_stream(
     Ok(out)
 }
 
-pub fn get_hmac_block_key(
+pub(crate) fn get_hmac_block_key(
     block_index: usize,
     key: &GenericArray<u8, typenum::U64>,
 ) -> Result<GenericArray<u8, typenum::U64>> {

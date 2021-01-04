@@ -17,7 +17,7 @@ pub enum InnerCipherSuite {
 }
 
 impl InnerCipherSuite {
-    pub fn get_cipher(&self, key: &[u8]) -> Result<Box<dyn cryptopraphy::cipher::Cipher>> {
+    pub(crate) fn get_cipher(&self, key: &[u8]) -> Result<Box<dyn cryptopraphy::cipher::Cipher>> {
         match self {
             InnerCipherSuite::Plain => Ok(
                 Box::new(

@@ -20,7 +20,7 @@ pub enum OuterCipherSuite {
 }
 
 impl OuterCipherSuite {
-    pub fn get_cipher(
+    pub(crate) fn get_cipher(
         &self,
         key: &[u8],
         iv: &[u8],

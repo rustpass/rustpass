@@ -36,7 +36,7 @@ pub enum KdfSettings {
 }
 
 impl KdfSettings {
-    pub fn get_kdf(&self) -> Box<dyn cryptopraphy::kdf::Kdf> {
+    pub(crate) fn get_kdf(&self) -> Box<dyn cryptopraphy::kdf::Kdf> {
         match self {
             KdfSettings::Aes { seed, rounds } => {
                 Box::new(
