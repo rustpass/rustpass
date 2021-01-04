@@ -4,6 +4,10 @@ use crate::{
         Error,
     },
     results::Result,
+    internal::traits::{
+        AsBytes,
+        TryFromBytes
+    }
 };
 
 use byteorder::{
@@ -75,12 +79,10 @@ impl Default for VariantDictionary {
     }
 }
 
-pub(crate) trait FromBytes {
-    fn parse(buffer: &[u8]) -> Result<VariantDictionary>;
-}
+impl TryFromBytes for VariantDictionary {
+    type Error = Error;
 
-impl FromBytes for VariantDictionary {
-    fn parse(buffer: &[u8]) -> Result<VariantDictionary> {
+    fn from_bytes(buffer: &[u8]) -> Result<VariantDictionary> {
         let version = LittleEndian::read_u16(&buffer[0..2]);
 
         if version != 0x100 {
@@ -166,16 +168,11 @@ impl FromBytes for VariantDictionary {
         )
     }
 }
-
-pub(crate) trait ToBytes<T: Sized> {
-    fn to_bytes(&self) -> Result<T>;
-}
-
-impl ToBytes<Vec<u8>> for VariantDictionary {
-    fn to_bytes(&self) -> Result<Vec<u8>> {
+impl AsBytes for VariantDictionary {
+    fn as_bytes(&self) -> Vec<u8> {
         let mut res = Vec::new();
 
-        res.write_u16::<LittleEndian>(0x100)?;
+        let _ = res.write_u16::<LittleEndian>(0x100);
 
         self.data
             .borrow()
@@ -188,9 +185,9 @@ impl ToBytes<Vec<u8>> for VariantDictionary {
                 let _ = res.write(val.to_vec().as_ref());
             });
 
-        res.write_u8(0x00)?;
+        let _ = res.write_u8(0x00);
 
-        Ok(res)
+        res
     }
 }
 
@@ -413,12 +410,9 @@ mod tests {
     fn test_serialize_deserialize_empty() {
         let vd = VariantDictionary::default();
 
-        let result = vd.to_bytes();
-        let serialized = assert_that(&result)
-            .is_ok()
-            .subject;
+        let serialized = vd.as_bytes();
 
-        let parsed_data = VariantDictionary::parse(serialized);
+        let parsed_data = VariantDictionary::from_bytes(serialized.as_ref());
 
         assert_that(&parsed_data)
             .is_err();
@@ -428,12 +422,9 @@ mod tests {
     fn test_serialize_deserialize_values() {
         let vd = create_variant_dictionary();
 
-        let result = vd.to_bytes();
-        let serialized = assert_that(&result)
-            .is_ok()
-            .subject;
+        let serialized = vd.as_bytes();
 
-        let parsed_data = VariantDictionary::parse(serialized);
+        let parsed_data = VariantDictionary::from_bytes(serialized.as_ref());
 
         let parsed_data_spec = assert_that(&parsed_data)
             .is_ok()

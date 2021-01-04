@@ -5,5 +5,5 @@ pub(crate) trait AsBytes {
 pub(crate) trait TryFromBytes {
     type Error;
 
-    fn from_bytes(value: &[u8]) -> Result<Self, ()> where Self: Sized;
+    fn from_bytes(value: &[u8]) -> Result<Self, Self::Error> where Self: Sized;
 }

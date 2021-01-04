@@ -26,12 +26,10 @@ use crate::{
             header::constants,
             version::get_kdbx_version,
         },
-        primitives::{
-            variant_dictionary::{
-                FromBytes,
-                VariantDictionary
-            }
-        },
+        structures::variant_dictionary::VariantDictionary,
+        traits::{
+            TryFromBytes
+        }
     },
 };
 
@@ -110,7 +108,7 @@ pub(crate) fn read_outer_header(data: &[u8]) -> Result<KDBX4Header> {
                 outer_iv = Some(block.block_data())
             },
             constants::DH_BLOCKID_KDFPARAMETERS => {
-                let vd = VariantDictionary::parse(
+                let vd = VariantDictionary::from_bytes(
                     block.block_data().as_ref()
                 )?;
 

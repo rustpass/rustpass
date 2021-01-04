@@ -3,9 +3,12 @@ pub(crate) mod header;
 pub(crate) mod payload;
 pub(crate) mod version;
 
-use crate::internal::traits::{
-    AsBytes,
-    TryFromBytes
+use crate::{
+    errors::Error,
+    internal::traits::{
+        AsBytes,
+        TryFromBytes
+    }
 };
 
 /// `Block<'a>` trait
@@ -77,7 +80,7 @@ pub(crate) fn write<'a, T>(header: &'a T) -> Vec<u8>
     header.as_bytes()
 }
 
-pub(crate) fn read<'a, T>(buf: &'a [u8]) -> Result<T, ()>
+pub(crate) fn read<'a, T>(buf: &'a [u8]) -> Result<T, T::Error>
     where T: Block<'a> + TryFromBytes
 {
     T::from_bytes(buf)

@@ -7,7 +7,7 @@ use crate::{
         Error
     },
     internal::{
-        primitives::variant_dictionary,
+        structures::variant_dictionary,
         suites::{
             KDF_AES_KDBX3,
             KDF_AES_KDBX4,
