@@ -19,7 +19,6 @@ use_native = [
     "sha2",
     "stream-cipher",
 ]
-use_openssl = ["openssl"]
 
 [dependencies.base64]
 version = "~0.13.0"
@@ -47,6 +46,7 @@ version = "0.3.1"
 
 [dependencies.rust-argon2]
 version = "~0.8.3"
+features = ["default"]
 
 [dependencies.salsa20]
 version = "0.7.2"
@@ -66,10 +66,6 @@ version = "~0.8.3"
 
 [dependencies.cfg-if]
 version = "1.0.0"
-
-
-# --------------------------------------------
-#  feature: !use-openssl
 
 [dependencies.aes]
 version = "0.6.0"
@@ -97,14 +93,6 @@ optional = true
 
 [dependencies.stream-cipher]
 version = "0.99.99"
-optional = true
-
-
-# --------------------------------------------
-#  feature: use-openssl
-
-[dependencies.openssl]
-version = "0.10.32"
 optional = true
 
 
