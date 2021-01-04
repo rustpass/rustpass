@@ -4,11 +4,11 @@ use std::{
     str,
 };
 
-use aes::cipher::generic_array::GenericArray;
 use byteorder::{
     ByteOrder,
     LittleEndian,
 };
+use generic_array::GenericArray;
 
 use crate::{
     database::{

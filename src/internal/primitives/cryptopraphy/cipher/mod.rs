@@ -1,34 +1,30 @@
 mod aes256;
-pub use self::aes256::AES256Cipher;
+pub(crate) use self::aes256::AES256Cipher;
 
 mod chacha20;
-pub use self::chacha20::ChaCha20Cipher;
+pub(crate) use self::chacha20::ChaCha20Cipher;
 
 mod salsa20;
-pub use self::salsa20::Salsa20Cipher;
+pub(crate) use self::salsa20::Salsa20Cipher;
 
 mod plain;
-pub use plain::PlainCipher;
+pub(crate) use plain::PlainCipher;
 
 mod twofish;
-pub use self::twofish::TwofishCipher;
+pub(crate) use self::twofish::TwofishCipher;
 
-pub use crate::{
-    errors::{
-        CryptoError,
-        DatabaseIntegrityError,
-        Error,
-    },
+pub(crate) use crate::{
+    errors::Error,
     results::Result,
 };
 
 
-pub trait Encrypt {
+pub(crate) trait Encrypt {
     fn encrypt(&mut self, plaintext: &[u8]) -> Result<Vec<u8>>;
 }
 
-pub trait Decrypt {
+pub(crate) trait Decrypt {
     fn decrypt(&mut self, ciphertext: &[u8]) -> Result<Vec<u8>>;
 }
 
-pub trait Cipher: Encrypt + Decrypt {}
+pub(crate) trait Cipher: Encrypt + Decrypt {}

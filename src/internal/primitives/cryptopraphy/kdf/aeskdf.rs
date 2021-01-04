@@ -1,13 +1,11 @@
 use super::{
     Kdf,
-    super::{
-        GenericArray,
-        typenum,
-        sha256,
-    },
+    GenericArray,
+    typenum,
 };
 
 use crate::{
+    internal::primitives::cryptopraphy::hash::sha256,
     errors::{
         CryptoError,
         DatabaseIntegrityError,

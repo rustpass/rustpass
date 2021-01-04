@@ -703,6 +703,7 @@ dependencies = [
  "extfmt",
  "flate2",
  "futures",
+ "generic-array",
  "hex",
  "hex-literal",
  "hmac",

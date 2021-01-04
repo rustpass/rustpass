@@ -41,6 +41,10 @@ version = "~1"
 [dependencies.futures]
 version = "~0.3.8"
 
+[dependencies.generic-array]
+version = "~0.14.4"
+features = []
+
 [dependencies.hex]
 version = "~0.4.2"
 

@@ -1,9 +1,7 @@
 use super::{
     Kdf,
-    super::{
-        GenericArray,
-        typenum
-    }
+    GenericArray,
+    typenum
 };
 
 use crate::{
@@ -50,8 +48,16 @@ impl Kdf for Argon2Kdf {
             version: self.version,
         };
 
-        let key = argon2::hash_raw(composite_key, &self.salt, &config)
-            .map_err(|e| Error::from(DatabaseIntegrityError::from(CryptoError::from(e))))?;
+        let key = argon2::hash_raw(
+            composite_key,
+            &self.salt,
+            &config
+        )
+            .map_err(|e| Error::from(
+                DatabaseIntegrityError::from(
+                    CryptoError::from(e)
+                )
+            ))?;
 
         Ok(*GenericArray::from_slice(&key))
     }

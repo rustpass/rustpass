@@ -4,15 +4,14 @@ use crate::{
     results::Result,
 };
 
-use aes::cipher::{
-    generic_array::{
-        GenericArray,
-        typenum,
-    },
-};
 use byteorder::{
     ByteOrder,
     LittleEndian,
+};
+
+use generic_array::{
+    GenericArray,
+    typenum,
 };
 
 pub fn read_hmac_block_stream(

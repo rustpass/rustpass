@@ -2,18 +2,25 @@ use super::{
     Cipher,
     Decrypt,
     Encrypt,
-    Result,
-    Error,
-    DatabaseIntegrityError,
-    CryptoError,
-    super::sha512,
+};
+
+use crate::{
+    internal::primitives::cryptopraphy::hash::sha512,
+    errors::{
+        CryptoError,
+        DatabaseIntegrityError,
+        Error
+    },
+    results::Result,
 };
 
 use chacha20::ChaCha20;
+
 use cipher::{
     StreamCipher,
     NewStreamCipher
 };
+
 
 #[derive(Debug)]
 pub struct ChaCha20Cipher {

@@ -1,12 +1,12 @@
 mod aeskdf;
-pub use self::aeskdf::*;
+pub(crate) use self::aeskdf::*;
 
 mod argon2;
-pub use self::argon2::*;
+pub(crate) use self::argon2::*;
 
 use crate::results::Result;
 
-pub(super) use aes::cipher::generic_array::{
+pub(super) use generic_array::{
     typenum,
     GenericArray,
 };

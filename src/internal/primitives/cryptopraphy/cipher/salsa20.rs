@@ -2,8 +2,11 @@ use super::{
     Cipher,
     Decrypt,
     Encrypt,
-    Result,
 };
+
+use crate::results::Result;
+
+use generic_array::GenericArray;
 
 use salsa20::{
     Salsa20,
@@ -12,7 +15,6 @@ use salsa20::{
         StreamCipher,
     }
 };
-use aes::cipher::generic_array::GenericArray;
 
 #[derive(Debug)]
 pub struct Salsa20Cipher {

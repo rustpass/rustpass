@@ -2,10 +2,15 @@ use super::{
     Cipher,
     Decrypt,
     Encrypt,
-    Result,
-    Error,
-    DatabaseIntegrityError,
-    CryptoError,
+};
+
+use crate::{
+    errors::{
+        CryptoError,
+        DatabaseIntegrityError,
+        Error
+    },
+    results::Result,
 };
 
 use aes::Aes256;

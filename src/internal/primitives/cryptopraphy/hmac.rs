@@ -7,7 +7,7 @@ use crate::{
     results::Result,
 };
 
-use aes::cipher::generic_array::{
+use generic_array::{
     typenum::U32,
     GenericArray,
 };

@@ -2,7 +2,11 @@ use super::{
     Cipher,
     Decrypt,
     Encrypt,
-    Result,
+};
+
+use crate::{
+    errors::Error,
+    results::Result,
 };
 
 #[derive(Debug)]
