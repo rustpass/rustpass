@@ -11,6 +11,7 @@ use std::{
 };
 
 #[bench]
+#[cfg(not(debug_assertions))]
 fn bench_open_aes256_aeskdf_v31(b: &mut Bencher) {
     _open_datatabase(
         b,

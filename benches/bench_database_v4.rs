@@ -11,6 +11,7 @@ use std::{
 };
 
 #[bench]
+#[cfg(not(debug_assertions))]
 fn bench_open_aes256_aeskdf_v4(b: &mut Bencher) {
     _open_datatabase(
         b,
@@ -21,6 +22,7 @@ fn bench_open_aes256_aeskdf_v4(b: &mut Bencher) {
 }
 
 #[bench]
+#[cfg(not(debug_assertions))]
 fn bench_open_aes256_argon2_v4(b: &mut Bencher) {
     _open_datatabase(
         b,
@@ -31,6 +33,7 @@ fn bench_open_aes256_argon2_v4(b: &mut Bencher) {
 }
 
 #[bench]
+#[cfg(not(debug_assertions))]
 fn bench_open_chacha20_aeskdf_v4(b: &mut Bencher) {
     _open_datatabase(
         b,
@@ -41,6 +44,7 @@ fn bench_open_chacha20_aeskdf_v4(b: &mut Bencher) {
 }
 
 #[bench]
+#[cfg(not(debug_assertions))]
 fn bench_open_chacha20_argon2_v4(b: &mut Bencher) {
     _open_datatabase(
         b,
@@ -51,6 +55,7 @@ fn bench_open_chacha20_argon2_v4(b: &mut Bencher) {
 }
 
 #[bench]
+#[cfg(not(debug_assertions))]
 fn bench_open_twofish_aeskdf_v4(b: &mut Bencher) {
     _open_datatabase(
         b,
@@ -61,6 +66,7 @@ fn bench_open_twofish_aeskdf_v4(b: &mut Bencher) {
 }
 
 #[bench]
+#[cfg(not(debug_assertions))]
 fn bench_open_twofish_argon2_v4(b: &mut Bencher) {
     _open_datatabase(
         b,
