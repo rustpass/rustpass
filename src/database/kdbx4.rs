@@ -21,15 +21,17 @@ use crate::{
         Error,
     },
     internal::{
-        database::binary::{
-            constants,
-            header::kdbx4
+        database::{
+            binary::{
+                constants,
+                header::kdbx4
+            },
+            xml::parser
         },
         random,
         suites::hmac_block_stream,
     },
     results::Result,
-    xml_parse,
 };
 use crate::internal::cryptopraphy;
 
@@ -125,7 +127,7 @@ pub(crate) fn parse(data: &[u8], key_elements: &[Vec<u8>]) -> Result<Database> {
 
     // after inner header is one XML document
     let xml = &payload[inner_header.body_start..];
-    let root = xml_parse::parse_xml_block(&xml, &mut *inner_decryptor)?;
+    let root = parser::parse(&xml, &mut *inner_decryptor)?;
 
     let db = Database {
         header: Header::KDBX4(header),

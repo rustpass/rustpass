@@ -22,14 +22,16 @@ use crate::{
         Error
     },
     internal::{
-        database::binary::{
-            constants,
-            header::kdbx3::read_header
+        database::{
+            binary::{
+                constants,
+                header::kdbx3::read_header
+            },
+            xml::parser
         },
         random
     },
-    results::Result,
-    xml_parse,
+    results::Result
 };
 use crate::api::suites::InnerCipherSuite;
 use crate::internal::cryptopraphy::{
@@ -149,7 +151,7 @@ pub(crate) fn parse(data: &[u8], key_elements: &[Vec<u8>]) -> Result<Database> {
         let block_buffer = compression.decompress(block_buffer_compressed)?;
 
         // Parse XML data
-        let block_group = xml_parse::parse_xml_block(&block_buffer, &mut *inner_decryptor)?;
+        let block_group = parser::parse(&block_buffer, &mut *inner_decryptor)?;
         db.root
             .child_groups
             .insert(block_group.name.clone(), block_group);

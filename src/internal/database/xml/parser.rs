@@ -1,3 +1,13 @@
+use super::*;
+use crate::{
+    errors::{
+        DatabaseIntegrityError,
+        Error,
+    },
+    results::Result,
+    internal::cryptopraphy::cipher::Cipher,
+};
+
 use base64;
 use secstr::SecStr;
 use xml::{
@@ -8,32 +18,7 @@ use xml::{
     }
 };
 
-use crate::{
-    database::items::{
-        AutoType,
-        AutoTypeAssociation,
-        Entry,
-        Group,
-        StringValue
-    },
-    errors::{
-        DatabaseIntegrityError,
-        Error,
-    },
-    results::Result,
-};
-use crate::internal::cryptopraphy::Cipher;
-
-#[derive(Debug)]
-enum Node {
-    Entry(Entry),
-    Group(Group),
-    KeyValue(String, StringValue),
-    AutoType(AutoType),
-    AutoTypeAssociation(AutoTypeAssociation),
-}
-
-pub(crate) fn parse_xml_block(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> {
+pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> {
     let parser = EventReader::new(xml);
 
     // Stack of parsed Node objects not yet associated with their parent
@@ -224,10 +209,4 @@ pub(crate) fn parse_xml_block(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Resu
     }
 
     Ok(root_group)
-}
-
-#[allow(dead_code)]
-pub(crate) fn write_xml_block(_group: &Group, _inner_cipher: &mut dyn Cipher) -> Result<Vec<u8>> {
-    let res = vec![];
-    Ok(res)
 }

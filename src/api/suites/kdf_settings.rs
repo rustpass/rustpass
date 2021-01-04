@@ -26,7 +26,7 @@ impl Sizable for KdfSettings {
                     + std::mem::size_of::<u64>()
             }
             KdfSettings::Argon2 {
-                memory,
+                memory: _,
                 salt,
                 ..
             } => {

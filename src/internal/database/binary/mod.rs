@@ -3,12 +3,9 @@ pub(crate) mod header;
 pub(crate) mod payload;
 pub(crate) mod version;
 
-use crate::{
-    errors::Error,
-    internal::traits::{
-        AsBytes,
-        TryFromBytes
-    }
+use crate::internal::traits::{
+    AsBytes,
+    TryFromBytes
 };
 
 /// `Block<'a>` trait
