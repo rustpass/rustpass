@@ -8,14 +8,14 @@ use crate::internal::database::binary::{
     BlockDataSlice,
 };
 
-use byteorder::{
-    ByteOrder,
-    LittleEndian,
-};
-
 use bytes::{
     self,
     BufMut
+};
+
+use byteorder::{
+    ByteOrder,
+    LittleEndian,
 };
 
 use std::{

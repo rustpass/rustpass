@@ -1,9 +1,6 @@
 pub(crate) mod constants;
-
 pub(crate) mod header;
 pub(crate) mod payload;
-
-pub(crate) mod structure;
 pub(crate) mod version;
 
 pub(crate) trait AsBytes {

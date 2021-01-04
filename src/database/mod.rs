@@ -1,19 +1,22 @@
 use crate::{
+    api::header::{
+        Header,
+        InnerHeader
+    },
     errors::DatabaseIntegrityError,
+    results::Result,
     internal::{
+        database::binary::{
+            constants::{
+                KDB_MAGIC,
+                KDBX_MAGIC,
+            },
+            version::get_kdbx_version,
+        },
         keyfile,
         primitives::cryptopraphy
     },
-    results::Result,
 };
-use crate::internal::database::binary::{
-    constants::{
-        KDB_MAGIC,
-        KDBX_MAGIC,
-    },
-    version::get_kdbx_version,
-};
-use crate::internal::database::binary;
 
 pub(crate) mod kdb;
 pub(crate) mod kdbx3;
@@ -25,10 +28,10 @@ pub(crate) mod items;
 #[derive(Debug)]
 pub struct Database {
     /// Header information of the KeePass types
-    pub header: binary::structure::Header,
+    pub header: Header,
 
     /// Optional inner header information
-    pub inner_header: binary::structure::InnerHeader,
+    pub inner_header: InnerHeader,
 
     /// Root node of the KeePass types
     pub root: items::Group,

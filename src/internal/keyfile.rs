@@ -1,11 +1,11 @@
 use crate::{
+    errors::Error,
+    results::Result,
     internal::primitives::{
         cryptopraphy,
     },
-    errors::Error,
-    results::Result
-
 };
+
 use xml::{
     name::OwnedName,
     reader::{
@@ -16,7 +16,7 @@ use xml::{
 
 use std::io::Read;
 
-pub fn parse(source: &mut dyn Read) -> Result<Vec<u8>> {
+pub(crate) fn parse(source: &mut dyn Read) -> Result<Vec<u8>> {
     let mut buffer = Vec::new();
     source.read_to_end(&mut buffer)?;
 

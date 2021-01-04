@@ -1,76 +1,56 @@
-use std::convert::TryFrom;
+use crate::{
+    api::{
+        kdbx4::{
+            KDBX4Header,
+            KDBX4InnerHeader,
+            BinaryAttachment
+        },
+        compression::Compression,
+        suites::{
+            InnerCipherSuite,
+            KdfSettings,
+            OuterCipherSuite
+        }
+    },
+    errors::{
+        DatabaseIntegrityError,
+        Error,
+    },
+    results::Result,
+    internal::{
+        database::binary::{
+            self,
+            BlockData,
+            BlockId,
+            BlockSize,
+            header::block,
+            header::constants,
+            version::get_kdbx_version,
+        },
+        primitives::{
+            variant_dictionary::{
+                FromBytes,
+                VariantDictionary
+            }
+        },
+    },
+};
 
 use byteorder::{
     ByteOrder,
     LittleEndian,
 };
 
-use crate::{
-    errors::{
-        DatabaseIntegrityError,
-        Error,
-    },
-    internal::{
-        primitives::compression::Compression,
-        suites::{
-            InnerCipherSuite,
-            KdfSettings,
-            OuterCipherSuite,
-        },
-    },
-    results::Result,
-};
-use crate::internal::database::binary::version::get_kdbx_version;
-use crate::internal::primitives::variant_dictionary::{
-    FromBytes,
-    VariantDictionary
-};
-
-use super::{
-    block,
-    constants,
-    super::{
-        BlockData,
-        BlockId,
-        BlockSize,
-    },
-};
-
-#[derive(Debug)]
-pub struct KDBX4Header {
-    pub version: u32,
-    pub file_major_version: u16,
-    pub file_minor_version: u16,
-    pub outer_cipher: OuterCipherSuite,
-    pub compression: Compression,
-    pub master_seed: Vec<u8>,
-    pub outer_iv: Vec<u8>,
-    pub kdf: KdfSettings,
-    pub body_start: usize,
-}
-
-#[derive(Debug)]
-pub struct KDBX4InnerHeader {
-    pub(crate) inner_random_stream: InnerCipherSuite,
-    pub(crate) inner_random_stream_key: Vec<u8>,
-    pub(crate) binaries: Vec<BinaryAttachment>,
-    pub(crate) body_start: usize,
-}
-
-#[derive(Debug)]
-pub struct BinaryAttachment {
-    flags: u8,
-    content: Vec<u8>,
-}
+use std::convert::TryFrom;
 
 impl TryFrom<&[u8]> for BinaryAttachment {
     type Error = Error;
 
     fn try_from(data: &[u8]) -> Result<Self> {
         let flags = data[0];
-        let content = data[1..].to_vec();
+        let content = data[1..].as_ref();
 
-        Ok(BinaryAttachment { flags, content })
+        Ok(BinaryAttachment::new(flags, content))
     }
 }
 

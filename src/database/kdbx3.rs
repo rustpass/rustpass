@@ -4,27 +4,26 @@ use byteorder::{
 };
 
 use crate::{
+    api::header::{
+        Header,
+        InnerHeader
+    },
     database::Database,
     errors::{
         DatabaseIntegrityError,
         Error
     },
+    results::Result,
+    xml_parse,
     internal::{
+        database::binary::header::kdbx3::read_header,
         primitives::cryptopraphy::{
             self,
             kdf::Kdf,
         }
     },
-    results::Result,
-    xml_parse,
 };
-use crate::internal::database::binary::{
-    header::kdbx3::read_header,
-    structure::{
-        Header,
-        InnerHeader
-    }
-};
+
 use crate::database::items::Group;
 
 /// Open, decrypt and database a KeePass types from a source and a password

@@ -1,3 +1,19 @@
+use crate::{
+    database::items::{
+        AutoType,
+        AutoTypeAssociation,
+        Entry,
+        Group,
+        StringValue
+    },
+    errors::{
+        DatabaseIntegrityError,
+        Error,
+    },
+    results::Result,
+    internal::primitives::cryptopraphy::Cipher,
+};
+
 use base64;
 use secstr::SecStr;
 use xml::{
@@ -7,16 +23,6 @@ use xml::{
         XmlEvent
     }
 };
-
-use crate::{
-    errors::{
-        DatabaseIntegrityError,
-        Error,
-    },
-    internal::primitives::cryptopraphy::Cipher,
-    results::Result,
-};
-use crate::database::items::{AutoType, AutoTypeAssociation, Entry, Group, StringValue};
 
 #[derive(Debug)]
 enum Node {

@@ -1,4 +1,10 @@
 use crate::{
+    api::suites::KdfSettings,
+    errors::{
+        DatabaseIntegrityError,
+        Error
+    },
+    results::Result,
     internal::{
         primitives::{
             cryptopraphy,
@@ -10,30 +16,9 @@ use crate::{
             KDF_ARGON2
         }
     },
-    errors::{
-        DatabaseIntegrityError,
-        Error
-    },
-    results::Result
-
 };
 
 use std::convert::TryFrom;
-
-#[derive(Debug)]
-pub enum KdfSettings {
-    Aes {
-        seed: Vec<u8>,
-        rounds: u64,
-    },
-    Argon2 {
-        memory: u64,
-        salt: Vec<u8>,
-        iterations: u64,
-        parallelism: u32,
-        version: argon2::Version,
-    },
-}
 
 impl KdfSettings {
     pub(crate) fn get_kdf(&self) -> Box<dyn cryptopraphy::kdf::Kdf> {

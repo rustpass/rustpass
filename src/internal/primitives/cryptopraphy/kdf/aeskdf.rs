@@ -53,7 +53,7 @@ impl AesKdf {
         raw_key: &[u8],
     ) -> Result<Vec<u8>> {
         let mut key = Vec::from(raw_key);
-        let mut key_len = raw_key.len();
+        let key_len = raw_key.len();
 
         let cipher =
             Mode::new_var(
@@ -89,7 +89,7 @@ impl Kdf for AesKdf {
         let future_key_left = self.transform_key_raw(_left);
         let future_key_right = self.transform_key_raw(_right);
 
-        let (key_left, key_right) = block_on(async { futures::join!(future_key_left, future_key_right) });
+        let (key_left, key_right) = block_on(async { join!(future_key_left, future_key_right) });
 
         sha256(&[&key_left?, &key_right?])
     }

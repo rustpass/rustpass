@@ -1,27 +1,14 @@
+use crate::{
+    api::kdb::KDBHeader,
+    errors::DatabaseIntegrityError,
+    results::Result,
+    internal::database::binary::version::get_kdbx_version,
+};
+
 use byteorder::{
     ByteOrder,
     LittleEndian,
 };
-
-use crate::{
-    errors::DatabaseIntegrityError,
-    results::Result
-};
-use crate::internal::database::binary::version::get_kdbx_version;
-
-#[derive(Debug)]
-pub struct KDBHeader {
-    pub version: u32,
-    pub flags: u32,
-    pub subversion: u32,
-    pub master_seed: Vec<u8>,
-    pub encryption_iv: Vec<u8>,
-    pub num_groups: u32,
-    pub num_entries: u32,
-    pub contents_hash: Vec<u8>,
-    pub transform_seed: Vec<u8>,
-    pub transform_rounds: u32,
-}
 
 pub const HEADER_SIZE: usize = 4 + 4 + 4 + 4 + 16 + 16 + 4 + 4 + 32 + 32 + 4; // first 4 bytes are the KeePass magic
 

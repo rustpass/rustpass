@@ -1,20 +1,14 @@
 use crate::{
-    internal::primitives::cryptopraphy,
+    api::suites::InnerCipherSuite,
     errors::{
         DatabaseIntegrityError,
         Error
     },
-    results::Result
+    results::Result,
+    internal::primitives::cryptopraphy,
 };
 
 use std::convert::TryFrom;
-
-#[derive(Debug)]
-pub enum InnerCipherSuite {
-    Plain,
-    Salsa20,
-    ChaCha20,
-}
 
 impl InnerCipherSuite {
     pub(crate) fn get_cipher(&self, key: &[u8]) -> Result<Box<dyn cryptopraphy::cipher::Cipher>> {

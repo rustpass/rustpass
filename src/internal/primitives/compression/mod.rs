@@ -2,6 +2,7 @@ mod compress;
 mod decompress;
 
 use crate::{
+    api::compression::Compression,
     errors::{
         DatabaseIntegrityError,
         Error,
@@ -13,12 +14,6 @@ use crate::{
 };
 
 use std::convert::TryFrom;
-
-#[derive(Debug)]
-pub enum Compression {
-    None,
-    GZip,
-}
 
 impl Compression {
     pub fn get_compression(&self) -> Box<dyn compress::Compress> {

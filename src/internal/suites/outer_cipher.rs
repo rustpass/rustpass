@@ -1,23 +1,17 @@
 use crate::{
-    internal::{
-        primitives::cryptopraphy,
-        suites
-    },
+    api::suites::OuterCipherSuite,
     errors::{
         DatabaseIntegrityError,
         Error
     },
-    results::Result
+    results::Result,
+    internal::{
+        primitives::cryptopraphy,
+        suites
+    },
 };
 
 use std::convert::TryFrom;
-
-#[derive(Debug)]
-pub enum OuterCipherSuite {
-    AES256,
-    Twofish,
-    ChaCha20,
-}
 
 impl OuterCipherSuite {
     pub(crate) fn get_cipher(

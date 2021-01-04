@@ -1,47 +1,34 @@
-use std::convert::TryFrom;
+use crate::{
+    api::{
+        kdbx3::KDBX3Header,
+        compression::Compression,
+        suites::{
+            InnerCipherSuite,
+            KdfSettings,
+            OuterCipherSuite
+        }
+    },
+    errors::DatabaseIntegrityError,
+    results::Result,
+    internal::{
+        database::binary::{
+            self,
+            BlockData,
+            BlockId,
+            BlockSize,
+            header::block,
+            header::constants,
+            version::get_kdbx_version,
+        },
+    },
+};
 
 use byteorder::{
     ByteOrder,
     LittleEndian,
 };
 
-use crate::{
-    errors::DatabaseIntegrityError,
-    internal::{
-        primitives::compression::Compression,
-        suites::{
-            InnerCipherSuite,
-            OuterCipherSuite,
-        },
-    },
-    results::Result,
-};
-use crate::internal::database::binary::{
-    self,
-    BlockData,
-    BlockId,
-    BlockSize,
-    header::block,
-    header::constants,
-    version::get_kdbx_version,
-};
-
-#[derive(Debug)]
-pub struct KDBX3Header {
-    pub version: u32,
-    pub file_major_version: u16,
-    pub file_minor_version: u16,
-    pub outer_cipher: OuterCipherSuite,
-    pub compression: Compression,
-    pub master_seed: Vec<u8>,
-    pub transform_seed: Vec<u8>,
-    pub transform_rounds: u64,
-    pub outer_iv: Vec<u8>,
-    pub protected_stream_key: Vec<u8>,
-    pub stream_start: Vec<u8>,
-    pub inner_cipher: InnerCipherSuite,
-    pub body_start: usize,
-}
+use std::convert::TryFrom;
 
 pub(crate) fn read_header(data: &[u8]) -> Result<KDBX3Header> {
     let (version, file_major_version, file_minor_version) = get_kdbx_version(data)?;

@@ -1,7 +1,32 @@
-use std::{
-    collections::HashMap,
-    convert::TryInto,
-    str,
+use crate::{
+    api::{
+        kdb::KDBHeader,
+        header::{
+            Header,
+            InnerHeader
+        },
+        suites::OuterCipherSuite
+    },
+    database::{
+        Database,
+        items,
+        utils,
+    },
+    errors::{
+        DatabaseIntegrityError,
+        Error,
+    },
+    results::Result,
+    internal::{
+        database::binary::header::kdb::{
+            self,
+            HEADER_SIZE,
+        },
+        primitives::cryptopraphy::{
+            self,
+            kdf::Kdf
+        },
+    },
 };
 
 use byteorder::{
@@ -10,31 +35,11 @@ use byteorder::{
 };
 use generic_array::GenericArray;
 
-use crate::{
-    database::{
-        Database,
-        utils,
-    },
-    errors::{
-        DatabaseIntegrityError,
-        Error,
-    },
-    internal::{
-        primitives::cryptopraphy::{
-            self,
-            kdf::Kdf
-        },
-        suites::OuterCipherSuite,
-    },
-    results::Result,
+use std::{
+    collections::HashMap,
+    convert::TryInto,
+    str,
 };
-use crate::internal::database::binary::header::kdb::{
-    self,
-    HEADER_SIZE,
-    KDBHeader,
-};
-use crate::internal::database::binary::structure::{Header, InnerHeader};
-use crate::database::items::{Entry, Group, StringValue};
 
 fn entry_name(field_type: u16) -> &'static str {
     match field_type {
@@ -106,11 +111,11 @@ pub(crate) fn parse(data: &[u8], key_elements: &[Vec<u8>]) -> Result<Database> {
     })
 }
 
-fn parse_groups(root: &mut Group, header_num_groups: u32, data: &mut &[u8]) -> Result<GidMap> {
+fn parse_groups(root: &mut items::Group, header_num_groups: u32, data: &mut &[u8]) -> Result<GidMap> {
     // Loop over group TLVs
     let mut gid_map: HashMap<u32, Vec<String>> = HashMap::new(); // the gid to group path map
-    let mut branch: Vec<Group> = Vec::new(); // the current branch in the group tree
-    let mut group: Group = Default::default(); // the current group (will be added as a leaf of the branch)
+    let mut branch: Vec<items::Group> = Vec::new(); // the current branch in the group tree
+    let mut group: items::Group = Default::default(); // the current group (will be added as a leaf of the branch)
     let mut level: Option<u16> = None; // the current group's level
     let mut gid: Option<u32> = None; // the current group's id
     let mut group_path: Vec<String> = Vec::new(); // the current group path
@@ -197,8 +202,8 @@ fn parse_groups(root: &mut Group, header_num_groups: u32, data: &mut &[u8]) -> R
     Ok(gid_map)
 }
 
-fn parse_db(header: &KDBHeader, data: &[u8]) -> Result<Group> {
-    let mut root = Group::root();
+fn parse_db(header: &KDBHeader, data: &[u8]) -> Result<items::Group> {
+    let mut root = items::Group::root();
 
     let mut pos = &data[..];
 
@@ -210,13 +215,13 @@ fn parse_db(header: &KDBHeader, data: &[u8]) -> Result<Group> {
 }
 
 fn parse_entries(
-    root: &mut Group,
+    root: &mut items::Group,
     gid_map: GidMap,
     header_num_entries: u32,
     data: &mut &[u8],
 ) -> Result<()> {
     // Loop over entry TLVs
-    let mut entry: Entry = Default::default(); // the current entry
+    let mut entry: items::Entry = Default::default(); // the current entry
     let mut gid: Option<u32> = None; // the current entry's group id
     let mut num_entries = 0;
     while num_entries < header_num_entries {
@@ -244,14 +249,14 @@ fn parse_entries(
                 // Title/URL/UserName/Additional/BinaryDesc
                 entry.add(
                     entry_name(field_type),
-                    &StringValue::UnprotectedString(utils::from_utf8(field_value)?),
+                    &items::StringValue::UnprotectedString(utils::from_utf8(field_value)?),
                 );
             }
             0x0007 => {
                 // Password
                 entry.add(
                     "Password",
-                    &StringValue::ProtectedString(utils::from_utf8(field_value)?.into()),
+                    &items::StringValue::ProtectedString(utils::from_utf8(field_value)?.into()),
                 );
             }
             0x0009..=0x000c => {
@@ -262,7 +267,7 @@ fn parse_entries(
                 // BinaryData
                 entry.add(
                     "BinaryData",
-                    &StringValue::Bytes(field_value.to_vec()),
+                    &items::StringValue::Bytes(field_value.to_vec()),
                 );
             }
             0xffff => {
@@ -275,7 +280,7 @@ fn parse_entries(
                 })?;
 
                 // Follow the group path to fetch the corresponding group
-                let mut group: &mut Group = root;
+                let mut group: &mut items::Group = root;
                 for g in group_path.iter() {
                     group = group.child_groups.get_mut(g).unwrap(); // the group path was built to match the group tree
                 }
@@ -304,7 +309,7 @@ fn parse_entries(
 }
 
 // Collapse the tail of a deque of Groups up to the given level
-fn collapse_tail_groups(branch: &mut Vec<Group>, level: usize, root: &mut Group) {
+fn collapse_tail_groups(branch: &mut Vec<items::Group>, level: usize, root: &mut items::Group) {
     while level < branch.len() {
         let leaf = branch.pop().unwrap(); // guaranteed to be at least 1 element since 0 <= level < branch.len()
         let parent = match branch.last_mut() {

@@ -1,22 +1,20 @@
 use crate::{
+    api::header::{
+        Header,
+        InnerHeader
+    },
     database::Database,
     errors::{
         DatabaseIntegrityError,
         Error,
     },
+    results::Result,
+    xml_parse,
     internal::{
+        database::binary::header::kdbx4,
         primitives::cryptopraphy,
         suites::hmac_block_stream,
     },
-    results::Result,
-    xml_parse,
-};
-use crate::internal::database::binary::{
-    header::kdbx4,
-    structure::{
-        Header,
-        InnerHeader
-    }
 };
 
 /// Open, decrypt and database a KeePass types from a source and key elements

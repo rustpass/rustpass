@@ -1,12 +1,10 @@
 use super::{
-    header::{
-        kdb::KDBHeader,
-        kdbx3::KDBX3Header,
-        kdbx4::{
-            KDBX4Header,
-            KDBX4InnerHeader,
-        }
-    },
+    kdb::KDBHeader,
+    kdbx3::KDBX3Header,
+    kdbx4::{
+        KDBX4Header,
+        KDBX4InnerHeader,
+    }
 };
 
 #[derive(Debug)]
