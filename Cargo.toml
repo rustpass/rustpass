@@ -3,9 +3,18 @@ name = "rustpass"
 description = "KeePass(X) KDB KDBX3 KDBX4 "
 
 version = "0.0.2"
-authors = ["<wizzk42@gmail.com>"]
-license = "MIT"
+authors = [""]
+license = "MIT OR Apache-2.0"
 edition = "2018"
+
+categories = ["cryptography", "parsing", "parser-implementations"]
+
+repository = "https://github.com/wizzk42/rustpass/"
+homepage = "https://github.com/wizzk42/rustpass/"
+
+# remove until we reach maturity
+publish = false
+
 
 [features]
 default = ["use_native"]
@@ -117,3 +126,6 @@ version = "1.1.0"
 
 [dev-dependencies.pretty_assertions] 
 version = "0.6.1"
+
+[badges]
+maintenance = { status = "actively-developed" }
