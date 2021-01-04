@@ -11,7 +11,6 @@ use std::{
 };
 
 #[test]
-#[cfg(not(debug_assertions))]
 fn it_open_aes256_aeskdf_v4() {
     let result = _open_database(
         "empty-aes256-aeskdf-v4.kdbx",
@@ -27,7 +26,6 @@ fn it_open_aes256_aeskdf_v4() {
 }
 
 #[test]
-#[cfg(not(debug_assertions))]
 fn it_open_aes256_argon2_v4() {
     let result = _open_database(
         "empty-aes256-argon2-v4.kdbx",
@@ -42,7 +40,6 @@ fn it_open_aes256_argon2_v4() {
 }
 
 #[test]
-#[cfg(not(debug_assertions))]
 fn it_open_chacha20_aeskdf_v4() {
     let result = _open_database(
         "empty-chacha20-aeskdf-v4.kdbx",
@@ -58,7 +55,6 @@ fn it_open_chacha20_aeskdf_v4() {
 }
 
 #[test]
-#[cfg(not(debug_assertions))]
 fn it_open_chacha20_argon2_v4() {
     let result = _open_database(
         "empty-chacha20-argon2-v4.kdbx",
@@ -74,7 +70,6 @@ fn it_open_chacha20_argon2_v4() {
 }
 
 #[test]
-#[cfg(not(debug_assertions))]
 fn it_open_twofish_aeskdf_v4() {
     let result = _open_database(
         "empty-twofish-aeskdf-v4.kdbx",
@@ -90,7 +85,6 @@ fn it_open_twofish_aeskdf_v4() {
 }
 
 #[test]
-#[cfg(not(debug_assertions))]
 fn it_open_twofish_argon2_v4() {
     let result = _open_database(
         "empty-twofish-argon2-v4.kdbx",

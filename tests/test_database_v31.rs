@@ -11,7 +11,6 @@ use std::{
 };
 
 #[test]
-#[cfg(not(debug_assertions))]
 fn it_open_aes256_aeskdf_v31() {
     let result = _open_database(
         "empty-aes256-aeskdf-v31.kdbx",
