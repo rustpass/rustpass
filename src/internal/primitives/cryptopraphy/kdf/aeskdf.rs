@@ -24,6 +24,11 @@ use block_modes::{
     Ecb,
 };
 
+use futures::{
+    executor::block_on,
+    join
+};
+
 type Mode = Ecb<Aes256, ZeroPadding>;
 
 pub struct AesKdf {
@@ -45,7 +50,7 @@ impl AesKdf {
     }
 
     #[inline(always)]
-    fn transform_key_raw(
+    async fn transform_key_raw(
         &self,
         raw_key: &[u8],
     ) -> Result<Vec<u8>> {
@@ -76,10 +81,12 @@ impl Kdf for AesKdf {
     ) -> Result<GenericArray<u8, typenum::U32>> {
         let (_left, _right) = composite_key.split_at(composite_key.len() / 2);
 
-        let key_left = self.transform_key_raw(_left)?;
-        let key_right = self.transform_key_raw(_right)?;
+        let future_key_left = self.transform_key_raw(_left);
+        let future_key_right = self.transform_key_raw(_right);
 
-        sha256(&[&key_left, &key_right])
+        let (key_left, key_right) = block_on(async { futures::join!(future_key_left, future_key_right) });
+
+        sha256(&[&key_left?, &key_right?])
     }
 }
 
