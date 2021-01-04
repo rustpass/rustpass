@@ -19,10 +19,8 @@ use crate::{
     results::Result,
     internal::{
         database::binary::{
-            self,
             BlockData,
             BlockId,
-            BlockSize,
             header::block,
             header::constants,
             version::get_kdbx_version,

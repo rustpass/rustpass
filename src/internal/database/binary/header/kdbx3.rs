@@ -4,7 +4,6 @@ use crate::{
         compression::Compression,
         suites::{
             InnerCipherSuite,
-            KdfSettings,
             OuterCipherSuite
         }
     },

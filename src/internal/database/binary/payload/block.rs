@@ -49,17 +49,17 @@ impl PayloadBlock {
     }
 
     pub fn size(&self) -> usize {
-        Self::OFFSET + self.block_size as usize
+        Self::OFFSET + self.block_size() as usize
     }
 }
 
 impl AsBytes for PayloadBlock {
     fn as_bytes(&self) -> Vec<u8> {
         let mut buf = bytes::BytesMut::with_capacity(self.block_size as usize);
-        buf.put_u32_le(self.block_id);
-        buf.put_slice(self.block_hash.as_ref());
-        buf.put_u32_le(self.block_size);
-        buf.put_slice(self.block_data.as_ref());
+        buf.put_u32_le(self.block_id());
+        buf.put_slice(self.block_hash().as_ref());
+        buf.put_u32_le(self.block_size());
+        buf.put_slice(self.block_data().as_ref());
         buf.to_vec()
     }
 }

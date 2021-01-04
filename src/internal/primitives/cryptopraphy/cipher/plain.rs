@@ -4,10 +4,7 @@ use super::{
     Encrypt,
 };
 
-use crate::{
-    errors::Error,
-    results::Result,
-};
+use crate::results::Result;
 
 #[derive(Debug)]
 pub struct PlainCipher;

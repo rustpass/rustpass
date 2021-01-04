@@ -4,11 +4,19 @@ use byteorder::{
 };
 
 use crate::{
-    api::header::{
-        Header,
-        InnerHeader
+    api::{
+        header::{
+            Header,
+            InnerHeader
+        },
+        kdbx3::KDBX3Header,
+        settings::Settings,
+        traits::Sizable
     },
-    database::Database,
+    database::{
+        Database,
+        items
+    },
     errors::{
         DatabaseIntegrityError,
         Error
@@ -16,15 +24,49 @@ use crate::{
     results::Result,
     xml_parse,
     internal::{
-        database::binary::header::kdbx3::read_header,
+        database::binary::{
+            constants,
+            header::kdbx3::read_header
+        },
         primitives::cryptopraphy::{
             self,
             kdf::Kdf,
-        }
+        },
+        random
     },
 };
+use crate::api::suites::InnerCipherSuite;
 
-use crate::database::items::Group;
+// create a new database
+pub(crate) fn create(
+    settings: &Settings
+) -> Result<Database> {
+    let mut kdbx3_header = KDBX3Header {
+        version: constants::KDBX_MAGIC,
+        file_major_version: 4,
+        file_minor_version: 0,
+        outer_cipher: settings.outer_cipher_suite(),
+        compression: settings.compression(),
+        master_seed: random::generate_random_bytes(32),
+        transform_seed: random::generate_random_bytes(32),
+        transform_rounds: settings.transform_rounds(),
+        outer_iv: random::generate_random_bytes(32),
+        protected_stream_key: random::generate_random_bytes(32),
+        stream_start: random::generate_random_bytes(32),
+        inner_cipher: InnerCipherSuite::Salsa20, // skip None and Arc4Variant
+        body_start: 0,
+    };
+
+    kdbx3_header.body_start = kdbx3_header.size();
+
+    Ok(
+        Database {
+            header: Header::KDBX3(kdbx3_header),
+            inner_header: InnerHeader::None,
+            root: items::Group::root(),
+        }
+    )
+}
 
 /// Open, decrypt and database a KeePass types from a source and a password
 pub(crate) fn parse(data: &[u8], key_elements: &[Vec<u8>]) -> Result<Database> {
@@ -69,7 +111,7 @@ pub(crate) fn parse(data: &[u8], key_elements: &[Vec<u8>]) -> Result<Database> {
     let mut db = Database {
         header: Header::KDBX3(header),
         inner_header: InnerHeader::None,
-        root: Group::root(),
+        root: items::Group::root(),
     };
 
     pos = 32;

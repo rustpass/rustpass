@@ -226,7 +226,7 @@ pub(crate) fn parse_xml_block(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Resu
     Ok(root_group)
 }
 
-pub(crate) fn write_xml_block(group: &Group, inner_cipher: &mut dyn Cipher) -> Result<Vec<u8>> {
+pub(crate) fn write_xml_block(_group: &Group, _inner_cipher: &mut dyn Cipher) -> Result<Vec<u8>> {
     let res = vec![];
 
 

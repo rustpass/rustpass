@@ -18,11 +18,11 @@ use crate::{
     },
 };
 
-pub(crate) mod kdb;
-pub(crate) mod kdbx3;
-pub(crate) mod kdbx4;
+pub mod items;
+pub mod kdb;
+pub mod kdbx3;
+pub mod kdbx4;
 pub(crate) mod utils;
-pub(crate) mod items;
 
 /// A decrypted KeePass types
 #[derive(Debug)]
@@ -43,7 +43,8 @@ impl Database {
         source: &mut dyn std::io::Read,
         password: Option<&str>,
         keyfile: Option<&mut dyn std::io::Read>,
-    ) -> Result<Database> {
+    ) -> Result<Database>
+    {
         let mut key_elements: Vec<Vec<u8>> = Vec::new();
 
         if let Some(p) = password {

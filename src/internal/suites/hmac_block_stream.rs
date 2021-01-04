@@ -70,7 +70,7 @@ pub(crate) fn create_hmac_block_stream(
     let mut block_index = 0;
 
     while pos < data.len() {
-        let mut block = &data[pos..(pos + size)];
+        let block = &data[pos..(pos + size)];
 
         let mut block_size = [0u8; 4];
         LittleEndian::write_u32(
@@ -117,7 +117,7 @@ pub(crate) fn get_hmac_block_key(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use extfmt::{Hexlify, AsHexdump};
+    use extfmt::Hexlify;
     use hex;
     use spectral::prelude::*;
 

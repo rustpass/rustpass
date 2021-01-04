@@ -74,7 +74,6 @@ fn parse_xml_keyfile(xml: &[u8]) -> Result<Vec<u8>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use extfmt::Hexlify;
     use spectral::prelude::*;
 
     #[test]

@@ -1,9 +1,21 @@
 use crate::{
-    api::header::{
-        Header,
-        InnerHeader
+    api::{
+        header::{
+            Header,
+            InnerHeader,
+        },
+        kdbx4::{
+            KDBX4Header,
+            KDBX4InnerHeader
+        },
+        settings::Settings,
+        suites::InnerCipherSuite,
+        traits::Sizable
     },
-    database::Database,
+    database::{
+        Database,
+        items
+    },
     errors::{
         DatabaseIntegrityError,
         Error,
@@ -11,11 +23,49 @@ use crate::{
     results::Result,
     xml_parse,
     internal::{
-        database::binary::header::kdbx4,
+        database::binary::{
+            constants,
+            header::kdbx4
+        },
         primitives::cryptopraphy,
+        random,
         suites::hmac_block_stream,
     },
 };
+
+// create a new database
+pub(crate) fn create(
+    settings: &Settings
+) -> Result<Database> {
+    let mut kdbx4_header = KDBX4Header {
+        version: constants::KDBX_MAGIC,
+        file_major_version: 4,
+        file_minor_version: 0,
+        outer_cipher: settings.outer_cipher_suite(),
+        compression: settings.compression(),
+        master_seed: random::generate_random_bytes(32),
+        outer_iv: random::generate_random_bytes(32),
+        kdf: settings.kdf_settings(),
+        body_start: 0,
+    };
+    let mut kdbx4_inner_header = KDBX4InnerHeader {
+        inner_random_stream: InnerCipherSuite::ChaCha20,
+        inner_random_stream_key: random::generate_random_bytes(32),
+        binaries: vec![],
+        body_start: 0
+    };
+
+    kdbx4_header.body_start = kdbx4_header.size();
+    kdbx4_inner_header.body_start = kdbx4_header.size() + kdbx4_inner_header.size();
+
+    Ok(
+        Database {
+            header: Header::KDBX4(kdbx4_header),
+            inner_header: InnerHeader::KDBX4(kdbx4_inner_header),
+            root: items::Group::root(),
+        }
+    )
+}
 
 /// Open, decrypt and database a KeePass types from a source and key elements
 pub(crate) fn parse(data: &[u8], key_elements: &[Vec<u8>]) -> Result<Database> {
