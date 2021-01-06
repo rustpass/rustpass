@@ -60,6 +60,9 @@ version = "~0.4.2"
 [dependencies.hex-literal]
 version = "~0.3.1"
 
+[dependencies.quick-xml]
+version = "0.20.0"
+
 [dependencies.rand]
 version = "~0.8.0"
 
@@ -127,5 +130,18 @@ version = "1.1.0"
 [dev-dependencies.pretty_assertions] 
 version = "0.6.1"
 
-[badges]
-maintenance = { status = "actively-developed" }
+
+# --------------------------------------------
+#  badges
+
+[badges.is-it-maintained-issue-resolution]
+repository = "wizzk42/rustpass"
+
+[badges.is-it-maintained-open-issues]
+repository = "wizzk42/rustpass"
+
+[badges.maintenance]
+status = "experimental"
+
+[badges.travis-ci]
+repository = "wizzk42/rustpass"

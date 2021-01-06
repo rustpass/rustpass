@@ -28,6 +28,8 @@ script:
   - cargo check --verbose
   - cargo build --verbose
   - cargo test --verbose
+  - cargo build --release
+  - cargo test --release -- --test-threads=2
 
 after_script: set +e
 

@@ -10,7 +10,7 @@ pub enum KdfSettings {
         memory: u64,
         salt: Vec<u8>,
         iterations: u64,
-        parallelism: u32,
+        lanes: u32,
         version: argon2::Version, // todo: this should be supplied via our own api
     },
 }
@@ -73,7 +73,7 @@ mod tests {
             memory: 128_000,
             salt: generate_random_bytes(32).to_vec(),
             iterations: 2_000,
-            parallelism: 2,
+            lanes: 4,
             version: argon2::Version::Version13
         };
 

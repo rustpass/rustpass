@@ -33,7 +33,7 @@ impl KdfSettings {
                 memory,
                 salt,
                 iterations,
-                parallelism,
+                lanes,
                 version,
             } => {
                 Box::new(
@@ -41,7 +41,7 @@ impl KdfSettings {
                         memory: *memory,
                         salt: salt.clone(),
                         iterations: *iterations,
-                        parallelism: *parallelism,
+                        lanes: *lanes,
                         version: *version,
                     }
                 )
@@ -60,7 +60,7 @@ impl TryFrom<variant_dictionary::VariantDictionary> for KdfSettings {
             let memory: u64 = vd.get("M")?;
             let salt: Vec<u8> = vd.get("S")?;
             let iterations: u64 = vd.get("I")?;
-            let parallelism: u32 = vd.get("P")?;
+            let lanes: u32 = vd.get("P")?;
             let version: u32 = vd.get("V")?;
 
             let version = match version {
@@ -78,7 +78,7 @@ impl TryFrom<variant_dictionary::VariantDictionary> for KdfSettings {
                     memory,
                     salt,
                     iterations,
-                    parallelism,
+                    lanes,
                     version,
                 }
             )
@@ -111,7 +111,7 @@ mod tests {
             memory: 1024 * 1024,
             salt: [23u8; 32].to_vec(),
             iterations: 128,
-            parallelism: 4,
+            lanes: 4,
             version: argon2::Version::Version13,
         }.get_kdf();
 

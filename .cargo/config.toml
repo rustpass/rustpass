@@ -1,13 +1,22 @@
 [build]
 rustflags = [
-    "-C", "target-cpu=native", 
-    "-C", "target-feature=+aes"
+    "-C", "target-feature=+64bit,64bit-mode,+aes,+avx,+avx2,+fma,+x87"
+]
+
+[target.x86_64-apple-darwin]
+rustflags = [
+    "-C", "target-feature=+64bit,64bit-mode,+aes,+avx,+avx2,+fma,+x87"
+]
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = [
+    "-C", "target-feature=+64bit,64bit-mode,+aes,+avx,+avx2,+fma,+x87"
 ]
 
 [profile.test]
 opt-level = 0
 lto = false
-debug = true
+debug = 2
 debug-assertions = true
 
 [profile.bench]
@@ -21,3 +30,4 @@ opt-level = 3
 lto = true
 debug = false
 debug-assertions = false
+panic = 'abort'
