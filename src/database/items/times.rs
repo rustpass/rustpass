@@ -1,4 +1,7 @@
-use super::TimestampValue;
+use super::{
+    Identifier,
+    TimestampValue
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Times {
@@ -29,4 +32,8 @@ impl Default for Times {
             location_changed: None,
         }
     }
+}
+
+impl Identifier for Times {
+    const IDENTIFIER: &'static [u8] = b"Times";
 }

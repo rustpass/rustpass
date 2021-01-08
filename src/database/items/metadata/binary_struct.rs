@@ -1,3 +1,4 @@
+use super::Identifier;
 use crate::database::items::values::Base64Value;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -46,6 +47,11 @@ impl Default for Binary {
         }
     }
 }
+
+impl Identifier for Binary{
+    const IDENTIFIER: &'static [u8] = b"Binary";
+}
+
 
 #[cfg(test)]
 mod tests {

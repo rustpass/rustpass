@@ -1,3 +1,5 @@
+use super::Identifier;
+
 use uuid::Uuid;
 
 use std::str::FromStr;
@@ -21,6 +23,10 @@ impl Default for UuidValue {
             Uuid::new_v4()
         )
     }
+}
+
+impl Identifier for UuidValue {
+    const IDENTIFIER: &'static [u8] = b"UUID";
 }
 
 impl ToString for UuidValue {

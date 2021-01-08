@@ -1,4 +1,5 @@
 use super::{
+    Identifier,
     binary_struct::Binary,
     memory_protection_struct::MemoryProtection,
 };
@@ -315,6 +316,10 @@ impl Default for Meta {
             binaries: vec![],
         }
     }
+}
+
+impl Identifier for Meta {
+    const IDENTIFIER: &'static [u8] = b"Meta";
 }
 
 #[cfg(test)]

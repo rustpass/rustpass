@@ -1,4 +1,5 @@
 use super::{
+    Identifier,
     AutoType,
     StringValue,
     ColorValue,
@@ -231,4 +232,8 @@ impl<'a> Entry {
     pub fn password(&'a self) -> Option<&'a str> {
         self.get("Password")
     }
+}
+
+impl Identifier for Entry {
+    const IDENTIFIER: &'static [u8] = b"Entry";
 }

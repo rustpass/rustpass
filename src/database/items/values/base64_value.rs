@@ -1,3 +1,5 @@
+use super::Identifier;
+
 use base64::{
     encode,
     decode
@@ -35,6 +37,10 @@ impl Default for Base64Value {
     fn default() -> Self {
         Base64Value(vec![])
     }
+}
+
+impl Identifier for Base64Value {
+    const IDENTIFIER: &'static [u8] = b"Base64";
 }
 
 impl From<String> for Base64Value {

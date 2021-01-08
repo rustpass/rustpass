@@ -1,3 +1,5 @@
+use super::Identifier;
+
 use extfmt::Hexlify;
 
 use std::convert::TryFrom;
@@ -58,6 +60,10 @@ impl TryFrom<&[u8]> for ColorValue {
 
         Ok(ColorValue::new(value[0], value[1], value[2]))
     }
+}
+
+impl Identifier for ColorValue {
+    const IDENTIFIER: &'static [u8] = b"Color";
 }
 
 #[cfg(test)]

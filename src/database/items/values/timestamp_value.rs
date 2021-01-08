@@ -1,3 +1,5 @@
+use super::Identifier;
+
 use chrono::{
     DateTime,
     Utc,
@@ -22,6 +24,10 @@ impl Default for TimestampValue {
     fn default() -> Self {
         TimestampValue::now()
     }
+}
+
+impl Identifier for TimestampValue {
+    const IDENTIFIER: &'static [u8] = b"Timestamp";
 }
 
 impl Deref for TimestampValue {

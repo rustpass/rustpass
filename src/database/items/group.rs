@@ -1,9 +1,11 @@
 use super::{
+    Identifier,
     Node,
     NodeIter,
     Entry,
     Notes,
-    Times
+    Times,
+    UuidValue
 };
 
 use std::collections::HashMap;
@@ -11,6 +13,7 @@ use std::collections::HashMap;
 /// A types group with child groups and entries
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct Group {
+    pub uuid: UuidValue,
     pub name: String,
     pub notes: Option<Notes>,
     pub icon_id: u32,
@@ -32,6 +35,7 @@ impl Group {
         entries: &HashMap<String, Entry>
     ) -> Self {
         Self {
+            uuid: UuidValue::default(),
             name: name.to_owned(),
             notes: None,
             icon_id: 0,
@@ -154,6 +158,10 @@ impl<'a> Group {
     pub fn iter(&'a self) -> NodeIter<'a> {
         (&self).into_iter()
     }
+}
+
+impl Identifier for Group {
+    const IDENTIFIER: &'static [u8] = b"Group";
 }
 
 impl<'a> IntoIterator for &'a Group {

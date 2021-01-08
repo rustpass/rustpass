@@ -1,4 +1,5 @@
 use super::{
+    Identifier,
     UuidValue,
     TimestampValue
 };
@@ -37,4 +38,8 @@ impl DeletedObject {
         self.deletion_time = value.to_owned();
         self
     }
+}
+
+impl Identifier for DeletedObject {
+    const IDENTIFIER: &'static [u8] = b"DeletedObject";
 }

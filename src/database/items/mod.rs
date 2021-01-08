@@ -62,3 +62,7 @@ impl Default for Database {
         }
     }
 }
+
+pub(crate) trait Identifier {
+    const IDENTIFIER: &'static [u8];
+}

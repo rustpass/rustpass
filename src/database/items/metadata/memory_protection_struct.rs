@@ -1,3 +1,5 @@
+use super::Identifier;
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MemoryProtection {
     pub protect_title: bool,
@@ -17,6 +19,10 @@ impl Default for MemoryProtection {
             protect_notes: true,
         }
     }
+}
+
+impl Identifier for MemoryProtection {
+    const IDENTIFIER: &'static [u8] = b"MemoryProtection";
 }
 
 #[cfg(test)]

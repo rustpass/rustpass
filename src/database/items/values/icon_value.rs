@@ -1,4 +1,5 @@
 use super::{
+    Identifier,
     Base64Value,
     UuidValue,
 };
@@ -17,6 +18,10 @@ impl IconValue {
     pub fn data(&self) -> Vec<u8> {
         self.data.to_vec()
     }
+}
+
+impl Identifier for IconValue {
+    const IDENTIFIER: &'static [u8] = b"Icon";
 }
 
 #[cfg(test)]
