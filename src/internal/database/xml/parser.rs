@@ -10,73 +10,93 @@ use crate::{
 
 use base64;
 use secstr::SecStr;
-use xml::{
-    name::OwnedName,
-    reader::{
-        EventReader,
-        XmlEvent
-    }
+
+use quick_xml::{
+    Reader,
+    events::{
+        Event,
+        attributes::Attribute,
+    },
 };
+use std::io::Read;
 
-pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> {
-    let parser = EventReader::new(xml);
+pub(crate) fn parse(
+    xml: &[u8],
+    inner_cipher: &mut dyn Cipher,
+) -> Result<Group>
+{
+    let mut parser = Reader::from_reader(xml);
 
-    // Stack of parsed Node objects not yet associated with their parent
+    let mut buf = Vec::new();
+    let mut stack: Vec<Vec<u8>> = vec![];
     let mut parsed_stack: Vec<Node> = vec![];
-
-    // Stack of XML element names
-    let mut xml_stack: Vec<String> = vec![];
-
     let mut root_group: Group = Default::default();
 
-    for e in parser {
-        match e.unwrap() {
-            XmlEvent::StartElement {
-                name: OwnedName { ref local_name, .. },
-                ref attributes,
-                ..
-            } => {
-                xml_stack.push(local_name.clone());
+    loop {
+        match parser.read_event(&mut buf) {
+            Ok(Event::Start(ref e)) => {
+                stack.push(e.local_name().to_vec());
 
-                match &local_name[..] {
-                    "Group" => parsed_stack.push(Node::Group(Default::default())),
-                    "Entry" => parsed_stack.push(Node::Entry(Default::default())),
-                    "String" => parsed_stack.push(Node::KeyValue(
-                        String::new(),
-                        StringValue::UnprotectedString(String::new()),
-                    )),
-                    "Value" => {
+                match e.local_name() {
+                    b"Group" => parsed_stack.push(
+                        Node::Group(Default::default())
+                    ),
+                    b"Entry" => parsed_stack.push(
+                        Node::Entry(Default::default())
+                    ),
+                    b"String" => parsed_stack.push(
+                        Node::KeyValue(
+                            String::new(),
+                            StringValue::UnprotectedString(String::new()),
+                        )
+                    ),
+                    b"Value" => {
                         // Are we encountering a protected value?
-                        if attributes
-                            .iter()
-                            .find(|oa| oa.name.local_name == "Protected")
-                            .map(|oa| &oa.value)
-                            .map_or(false, |v| v.to_lowercase().parse::<bool>().unwrap_or(false))
+                        if e.attributes()
+                            .map(|res|
+                                res.unwrap_or(
+                                    Attribute {
+                                        key: b"",
+                                        value: std::borrow::Cow::from(
+                                            "".as_bytes().to_vec()
+                                        ),
+                                    }
+                                )
+                            )
+                            .find(|attr| attr.key == b"Protected")
+                            .map(|attr| attr.value)
+                            .map_or(false, |v| {
+                                std::str::from_utf8(&v).expect("").parse::<bool>().unwrap_or_default()
+                            })
                         {
                             // Transform value to a Value::Protected
                             if let Some(&mut Node::KeyValue(_, ref mut ev)) =
-                                parsed_stack.last_mut()
+                            parsed_stack.last_mut()
                             {
                                 *ev = StringValue::ProtectedString(SecStr::new(vec![]));
                             }
                         }
                     }
-                    "AutoType" => parsed_stack.push(Node::AutoType(Default::default())),
-                    "Association" => {
+                    b"AutoType" => parsed_stack.push(Node::AutoType(Default::default())),
+                    b"Association" => {
                         parsed_stack.push(Node::AutoTypeAssociation(Default::default()))
                     }
                     _ => {}
                 }
             }
 
-            XmlEvent::EndElement {
-                name: OwnedName { ref local_name, .. },
-            } => {
-                xml_stack.pop();
-
-                if ["Group", "Entry", "String", "AutoType", "Association"]
-                    .contains(&&local_name[..])
-                {
+            Ok(Event::End(ref e)) => {
+                stack.pop();
+                let local_name = e.local_name();
+                let local_name_matches = match local_name {
+                    b"Group"
+                    | b"Entry"
+                    | b"String"
+                    | b"AutoType"
+                    | b"Association" => true,
+                    _ => false
+                };
+                if local_name_matches {
                     let finished_node = parsed_stack.pop().unwrap();
                     let parsed_stack_head = parsed_stack.last_mut();
 
@@ -94,12 +114,15 @@ pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> 
                         Node::Group(finished_group) => {
                             match parsed_stack_head {
                                 Some(&mut Node::Group(Group {
-                                    ref mut child_groups,
-                                    ..
-                                })) => {
+                                                          ref mut child_groups,
+                                                          ..
+                                                      })) => {
                                     // A Group was finished - add Group to parent Group's child groups
                                     child_groups
-                                        .insert(finished_group.name.clone(), finished_group);
+                                        .insert(
+                                            finished_group.name.clone(),
+                                            finished_group,
+                                        );
                                 }
                                 None => {
                                     // There is no more parent nodes left -> we are at the root
@@ -111,8 +134,8 @@ pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> 
 
                         Node::Entry(finished_entry) => {
                             if let Some(&mut Node::Group(Group {
-                                ref mut entries, ..
-                            })) = parsed_stack_head
+                                                             ref mut entries, ..
+                                                         })) = parsed_stack_head
                             {
                                 // A Entry was finished - add Node to parent Group's entries
                                 entries.insert(
@@ -135,7 +158,7 @@ pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> 
                         Node::AutoTypeAssociation(ata) => {
                             if let Some(
                                 &mut Node::AutoType(
-                                ref mut autotype
+                                    ref mut autotype
                                 )
                             ) = parsed_stack_head
                             {
@@ -145,22 +168,35 @@ pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> 
                     }
                 }
             }
-
-            XmlEvent::Characters(c) => {
+            Ok(Event::Text(ref e)) => {
                 // Got some character data that need to be matched to a Node on the parsed_stack.
 
-                match (xml_stack.last().map(|s| &s[..]), parsed_stack.last_mut()) {
-                    (Some("Name"), Some(&mut Node::Group(Group { ref mut name, .. }))) => {
+                let c = e.unescape_and_decode(&parser).expect("character value should be decodable");
+
+                match (
+                    stack.last().map(|s| &s[..]),
+                    parsed_stack.last_mut()
+                ) {
+                    (
+                        Some(b"Name"),
+                        Some(&mut Node::Group(Group { ref mut name, .. }))
+                    ) => {
                         // Got a "Name" element with a Node::Group on the parsed_stack
                         // Update the Group's name
                         *name = c;
                     }
-                    (Some("Key"), Some(&mut Node::KeyValue(ref mut k, _))) => {
+                    (
+                        Some(b"Key"),
+                        Some(&mut Node::KeyValue(ref mut k, _))
+                    ) => {
                         // Got a "Key" element with a Node::KeyValue on the parsed_stack
                         // Update the KeyValue's key
                         *k = c;
                     }
-                    (Some("Value"), Some(&mut Node::KeyValue(_, ref mut ev))) => {
+                    (
+                        Some(b"Value"),
+                        Some(&mut Node::KeyValue(_, ref mut ev))
+                    ) => {
                         // Got a "Value" element with a Node::KeyValue on the parsed_stack
                         // Update the KeyValue's value
 
@@ -170,9 +206,6 @@ pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> 
                                 *v = c;
                             }
                             StringValue::ProtectedString(ref mut v) => {
-                                // Use the decryptor to decrypt the protected
-                                // and base64-encoded value
-                                //
                                 let buf = base64::decode(&c)
                                     .map_err(|e| Error::from(DatabaseIntegrityError::from(e)))?;
 
@@ -185,17 +218,26 @@ pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> 
                             }
                         }
                     }
-                    (Some("Enabled"), Some(&mut Node::AutoType(ref mut at))) => {
+                    (
+                        Some(b"Enabled"),
+                        Some(&mut Node::AutoType(ref mut at))
+                    ) => {
                         at.enabled = c.parse().unwrap_or(false);
                     }
-                    (Some("DefaultSequence"), Some(&mut Node::AutoType(ref mut at))) => {
+                    (
+                        Some(b"DefaultSequence"),
+                        Some(&mut Node::AutoType(ref mut at))
+                    ) => {
                         at.sequence = Some(c.to_owned());
                     }
-                    (Some("Window"), Some(&mut Node::AutoTypeAssociation(ref mut ata))) => {
+                    (
+                        Some(b"Window"),
+                        Some(&mut Node::AutoTypeAssociation(ref mut ata))
+                    ) => {
                         ata.window = Some(c.to_owned());
                     }
                     (
-                        Some("KeystrokeSequence"),
+                        Some(b"KeystrokeSequence"),
                         Some(&mut Node::AutoTypeAssociation(ref mut ata)),
                     ) => {
                         ata.sequence = Some(c.to_owned());
@@ -203,9 +245,12 @@ pub(crate) fn parse(xml: &[u8], inner_cipher: &mut dyn Cipher) -> Result<Group> 
                     _ => {}
                 }
             }
-
-            _ => {}
+            Ok(Event::Eof) => break,
+            Err(ref err) => {}
+            _ => ()
         }
+
+        buf.clear();
     }
 
     Ok(root_group)
