@@ -1,63 +1,58 @@
 language: rust
 
-stages:
-  - tools
-  - build
-
-_shared: &shared
-  rust:
-    - stable
-    - beta
-    - nightly
-  env:
-    - RUSTFLAGS="-C target-feature=+aes,+sse,+sse2"
-  before_install: bash ci/prepare_install.sh
-  install: bash ci/install.sh
-  before_script: ci/prepare_build.sh dev
-  script: bash ci/build.sh dev
-  after_script: set +e
-
-jobs:
-  fast_finish: true
-  include:
-    - name: "x86_64-unknown-linux-gnu"
-      <<: *shared
-      env: TARGET="x86_64-unkown-linux-gnu"
-      os: linux
-      dist: bionic
-      stage: build
-    - name: "x86_64-apple-darwin"
-      <<: *shared
-      env: TARGET=x86_64-apple-darwin
-      os: osx
-      osx_image: xcode12u
-      stage: build
-    - name: "rustfmt"
-      install: true
-      script: |
-        if rustup component add rustfmt-preview ; then
-            ci/run_cargo_tool.sh check_fmt || true
-        fi
-      stage: tools
-#    - name: "clippy"
-#      install: true
-#      script: |
-#        if rustup component add clippy-preview ; then
-#            ci/run_cargo_tool.sh clippy
-#        fi
-#      stage: tools
-      
-  allow_failures:
-    - rust: nightly
-
 git:
   submodules: false
 
 cache: cargo
 
+rust:
+  - stable
+  - beta
+  - nightly
+
+os:
+  - linux
+  - osx
+ 
+env:
+  global:
+    - RUSTFLAGS="-C target-feature=+aes,+sse,+sse2"
+
+matrix:
+  fast_finish: true
+
+  allow_failures:
+    - rust: nightly
+
+  include:
+    - name: "format check: rustfmt"
+      rust: stable
+      install: true
+      script: |
+        if rustup component add rustfmt-preview ; then
+            ci/run_cargo_tool.sh check_fmt || true
+        fi
+    - name: "style check: clippy"
+      if: env(ENABLE_CLIPPY) = 1
+      install: true
+      script: |
+        if rustup component add clippy-preview ; then
+            ci/run_cargo_tool.sh clippy
+        fi
+
 before_cache:
   - rm -rf "$HOME/.cargo/registry/src"
   - chmod -R a+r $HOME/.cargo;
+
+before_install: bash ci/prepare_install.sh
+
+install: bash ci/install.sh
+
+before_script: ci/prepare_build.sh dev
+
+script: bash ci/build.sh dev
+
+after_script: set +e
 
 branches:
   only:
