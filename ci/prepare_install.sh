@@ -6,9 +6,9 @@
 set -euxo pipefail
 
 prepare() {
-    echo "Preparing environment"
+    echo "Preparing install environment"
     echo "..."
-    echo "Environment prepared."
+    echo "Install environment prepared."
 }
 
 prepare
