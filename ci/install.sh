@@ -1,14 +1,14 @@
 #!/bin/sh
 #
 #
+#
 
- set -euxo pipefail
+set -euxo pipefail
 
- main() {
-     echo "Preparing rust environment..."
-     echo "Environment prepared."
- }
+install() {
+    echo "Install"
+}
 
- main
+install
 
- exit 0
+exit 0

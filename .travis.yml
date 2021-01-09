@@ -4,33 +4,55 @@ rust:
   - beta
   - nightly
 
+stages:
+  - tools
+  - build-and-test
+
+env:
+  global:
+    - RUSTFLAGS="-C target-feature=+aes,+sse,+sse2"
+
 jobs:
-  allow_failures:
-    - rust: nightly
   fast_finish: true
   include:
-    - language: rust
+    - name: "x86_64-unknown-linux-gnu"
+      env: TARGET="x86_64-unkown-linux-gnu"
       os: linux
       dist: bionic
-    - language: rust
+      stage: build-and-test
+    - name: "x86_64-apple-darwin"
+      env: TARGET=x86_64-apple-darwin
       os: osx
-  
+      osx_image: xcode12u
+      stage: build-and-test
+    - name: "rustfmt"
+      install: true
+      script: |
+        if rustup component add rustfmt-preview ; then
+            ci/run_cargo_tool.sh check_fmt || true
+        fi
+      stage: tools
+    - name: "clippy"
+      install: true
+      script: |
+        if rustup component add clippy-preview ; then
+            ci/run_cargo_tool.sh clippy
+        fi
+      stage: tools
+      
+  allow_failures:
+    - rust: nightly
+
 arch:
   - amd64
 
 git:
   submodules: false
 
-install:
-  - bash ci/install.sh
-
-script:
-  - cargo check --verbose
-  - cargo build --verbose
-  - cargo test --verbose
-  - cargo build --release
-  - cargo test --release -- --test-threads=2
-
+before_install: bash ci/prepare.sh
+install: bash ci/install.sh
+before_script: cargo generate-lockfile
+script: bash ci/build.sh dev
 after_script: set +e
 
 cache: cargo
