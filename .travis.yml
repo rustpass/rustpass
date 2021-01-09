@@ -32,13 +32,13 @@ jobs:
             ci/run_cargo_tool.sh check_fmt || true
         fi
       stage: tools
-    - name: "clippy"
-      install: true
-      script: |
-        if rustup component add clippy-preview ; then
-            ci/run_cargo_tool.sh clippy
-        fi
-      stage: tools
+#    - name: "clippy"
+#      install: true
+#      script: |
+#        if rustup component add clippy-preview ; then
+#            ci/run_cargo_tool.sh clippy
+#        fi
+#      stage: tools
       
   allow_failures:
     - rust: nightly
