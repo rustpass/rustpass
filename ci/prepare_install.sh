@@ -3,14 +3,14 @@
 #
 #
 
-set -euxo pipefail
+set -eux
 
-prepare() {
+prepare_install() {
     echo "Preparing install environment"
     echo "..."
     echo "Install environment prepared."
 }
 
-prepare
+prepare_install
 
 exit 0

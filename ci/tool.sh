@@ -3,7 +3,7 @@
 #
 #
 
-set -ex
+set -euxo pipefail
 
 : "${1?$0 <parameter>}"
 
